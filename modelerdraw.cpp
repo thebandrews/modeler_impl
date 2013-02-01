@@ -424,6 +424,9 @@ void drawRevolution(double scale)
     }
     else
     {
+        //
+        // Number of bands in the rotation
+        //
         int divisions; 
         switch(mds->m_quality)
         {
@@ -439,40 +442,80 @@ void drawRevolution(double scale)
 
         const float PI = 3.14159265f;
 
-        float origin_y = 1.13132490911795f;
+        float origin_y = 1.0;
         float origin_z = -3.0f;
 
         int num_pts = revolution_pts.size();
-        for ( int i=0; i<6; ++ i ) {
+
+        int step_size = 360 / divisions;
+
+        for(int i = 0; i < 360; i += step_size)
+        {
             // This implementation uses glBegin(GL_TRIANGLES)/glend() and has trivial normals and texture coordinates.
             // It is OK to start from the code below for developing and testing,
             // but please use glDrawElements() with GL_TRIANGES to draw the surface in the final code.
             // It is a naive version of surface of revolution created by translating a curve along a straight line.
-            // You need to rotate the curve to create a more interesting shape. Also, please create your own curve with the curve editor tool. Good luck!						
-            for ( int j=1; j<num_pts; ++ j ) {
+            // You need to rotate the curve to create a more interesting shape. Also, please create your own curve with the curve editor tool. Good luck!
 
-                float p1_x = (float)(revolution_pts[j-1].x * scale);
-                float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
-                float p1_z = i+origin_z;
+            float radian = i * (PI / 180);
 
-                float p2_x = (float)(revolution_pts[j].x * scale);
-                float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
-                float p2_z = p1_z;
+            /*float p1_x = cos(radian) * (10);
+            float p1_y = origin_y;
+            float p1_z = sin(radian) * (10);*/
 
-                float p3_x = p1_x;
-                float p3_y = p1_y;
-                float p3_z = p1_z+1;
+            //for ( int j=1; j<num_pts; ++ j ) {
 
-                float p4_x = p2_x;
-                float p4_y = p2_y;
-                float p4_z = p3_z;
+            //    float p1_x = (float)(revolution_pts[j-1].x * scale);
+            //    float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
+            //    float p1_z = i+origin_z;
 
-                // You must compute the normal directions add texture coordinates, see lecture notes
+            float p1_x = cos(radian)*(5);
+            float p1_y = origin_y;
+            float p1_z = sin(radian)*(5);
+
+
+            //    float p2_x = (float)(revolution_pts[j].x * scale);
+            //    float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
+            //    float p2_z = p1_z;
+
+            float p2_x = cos(radian)*(5 + 1);
+            float p2_y = origin_y + 1;
+            float p2_z = sin(radian)*(5 + 1);
+
+            //    //
+            //    // calculate x,z for rotation about the y-axis
+            //    //
+            //    //float p3_x = cos(radian) * (.5*p1_x);
+            //    //float p3_y = p1_y;
+            //    //float p3_z = sin(radian) * (.5*p1_z);
+
+            //float p3_x = p1_x;
+            //float p3_y = p1_y;
+            float temp_radian;
+            if(i + step_size > 360)
+            {
+                temp_radian = 0;
+            }
+            else
+            {
+                temp_radian = (i + step_size) * (PI / 180);
+            }
+
+            float p3_x = cos(temp_radian)*(5);
+            float p3_y = p1_y;
+            float p3_z = sin(temp_radian)*(5); //p1_z+1.0;
+
+            float p4_x = cos(temp_radian)*(5+1); //p2_x;
+            float p4_y = p2_y;
+            float p4_z = sin(temp_radian)*(5+1); //p3_z;
+
+                // You must compute the normal directions, add texture coordinates, see lecture notes
                 float n1_x = 1;
                 float n1_y = 0;
                 float n1_z = 0;
                 float texture_u = 1.0f;
                 float texture_v = 1.0f;
+
 
                 glBegin(GL_TRIANGLES);
                 glNormal3f(n1_x,n1_y,n1_z);
@@ -501,9 +544,10 @@ void drawRevolution(double scale)
                 glTexCoord2f( texture_u, texture_v);
                 glVertex3f(p4_x, p4_y, p4_z);
                 glEnd();
-            }
-        }
 
+            //}
+        }
+        //glEnd();
     }
 }
 
