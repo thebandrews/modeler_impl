@@ -10,7 +10,7 @@
 // Helper functions from the red book so we can print text on the
 // screen.
 GLubyte space[] =
-    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 GLubyte letters[][13] = {
     {0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xff, 0xc3, 0xc3, 0xc3, 0x66, 0x3c, 0x18},
     {0x00, 0x00, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe},
@@ -44,32 +44,32 @@ GLuint fontOffset;
 
 void makeRasterFont(void)
 {
-   GLuint i, j;
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glPixelStorei( GL_UNPACK_ROW_LENGTH, 8);
+    GLuint i, j;
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei( GL_UNPACK_ROW_LENGTH, 8);
 
-   fontOffset = glGenLists (128);
-   for (i = 0,j = 'A'; i < 26; i++,j++) {
-      glNewList(fontOffset + j, GL_COMPILE);
-      glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, letters[i]);
-      glEndList();
-   }
-   glNewList(fontOffset + ' ', GL_COMPILE);
-   glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, space);
-   glEndList();
+    fontOffset = glGenLists (128);
+    for (i = 0,j = 'A'; i < 26; i++,j++) {
+        glNewList(fontOffset + j, GL_COMPILE);
+        glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, letters[i]);
+        glEndList();
+    }
+    glNewList(fontOffset + ' ', GL_COMPILE);
+    glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, space);
+    glEndList();
 }
 
 void printString(char *s)
 {
-   static bool haveInitialized = false;
-   if( !haveInitialized ) {
-	   makeRasterFont();
-	   haveInitialized = true;
-   }
-   glPushAttrib (GL_LIST_BIT);
-   glListBase(fontOffset);
-   glCallLists(strlen(s), GL_UNSIGNED_BYTE, (GLubyte *) s);
-   glPopAttrib ();
+    static bool haveInitialized = false;
+    if( !haveInitialized ) {
+        makeRasterFont();
+        haveInitialized = true;
+    }
+    glPushAttrib (GL_LIST_BIT);
+    glListBase(fontOffset);
+    glCallLists(strlen(s), GL_UNSIGNED_BYTE, (GLubyte *) s);
+    glPopAttrib ();
 }
 
 // ********************************************************
@@ -78,13 +78,13 @@ void printString(char *s)
 static void _dump_current_modelview( void )
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     if (mds->m_rayFile == NULL)
     {
         fprintf(stderr, "No .ray file opened for writing, bailing out.\n");
         exit(-1);
     }
-    
+
     GLdouble mv[16];
     glGetDoublev( GL_MODELVIEW_MATRIX, mv );
     fprintf( mds->m_rayFile, 
@@ -98,19 +98,19 @@ static void _dump_current_modelview( void )
 static void _dump_current_material( void )
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     if (mds->m_rayFile == NULL)
     {
         fprintf(stderr, "No .ray file opened for writing, bailing out.\n");
         exit(-1);
     }
-    
+
     fprintf( mds->m_rayFile, 
         "material={\n\tdiffuse = (%f, %f, %f);\n\tambient = (%f, %f, %f);\n\tspecular = (%f, %f, %f);\n\tshininess = %f; }\n",
         mds->m_diffuseColor[0], mds->m_diffuseColor[1], mds->m_diffuseColor[2], 
         mds->m_ambientColor[0], mds->m_ambientColor[1], mds->m_ambientColor[2],
-		mds->m_specularColor[0], mds->m_specularColor[1], mds->m_specularColor[2],
-		mds->m_shininess);
+        mds->m_specularColor[0], mds->m_specularColor[1], mds->m_specularColor[2],
+        mds->m_shininess);
 }
 
 // ****************************************************************************
@@ -119,18 +119,18 @@ static void _dump_current_material( void )
 ModelerDrawState* ModelerDrawState::m_instance = NULL;
 
 ModelerDrawState::ModelerDrawState() : m_drawMode(NORMAL), m_quality(MEDIUM),
-showMarkers(false)
+    showMarkers(false)
 {
     float grey[]  = {.5f, .5f, .5f, 1};
     float white[] = {1,1,1,1};
     float black[] = {0,0,0,1};
-    
+
     memcpy(m_ambientColor, black, 4 * sizeof(float));
     memcpy(m_diffuseColor, grey, 4 * sizeof(float));
     memcpy(m_specularColor, white, 4 * sizeof(float));
-    
+
     m_shininess = 5.5;
-    
+
     m_rayFile = NULL;
 }
 
@@ -149,12 +149,12 @@ ModelerDrawState* ModelerDrawState::Instance()
 void setAmbientColor(float r, float g, float b)
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     mds->m_ambientColor[0] = (GLfloat)r;
     mds->m_ambientColor[1] = (GLfloat)g;
     mds->m_ambientColor[2] = (GLfloat)b;
     mds->m_ambientColor[3] = (GLfloat)1.0;
-    
+
     if (mds->m_drawMode == NORMAL)
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mds->m_ambientColor);
 }
@@ -162,12 +162,12 @@ void setAmbientColor(float r, float g, float b)
 void setEmissiveColor(float r, float g, float b)
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     mds->m_emissiveColor[0] = (GLfloat)r;
     mds->m_emissiveColor[1] = (GLfloat)g;
     mds->m_emissiveColor[2] = (GLfloat)b;
     mds->m_emissiveColor[3] = (GLfloat)1.0;
-    
+
     if (mds->m_drawMode == NORMAL)
         glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mds->m_emissiveColor);
 }
@@ -175,12 +175,12 @@ void setEmissiveColor(float r, float g, float b)
 void setDiffuseColor(float r, float g, float b)
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     mds->m_diffuseColor[0] = (GLfloat)r;
     mds->m_diffuseColor[1] = (GLfloat)g;
     mds->m_diffuseColor[2] = (GLfloat)b;
     mds->m_diffuseColor[3] = (GLfloat)1.0;
-    
+
     if (mds->m_drawMode == NORMAL)
         glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, mds->m_diffuseColor);
     else
@@ -190,12 +190,12 @@ void setDiffuseColor(float r, float g, float b)
 void setSpecularColor(float r, float g, float b)
 {	
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     mds->m_specularColor[0] = (GLfloat)r;
     mds->m_specularColor[1] = (GLfloat)g;
     mds->m_specularColor[2] = (GLfloat)b;
     mds->m_specularColor[3] = (GLfloat)1.0;
-    
+
     if (mds->m_drawMode == NORMAL)
         glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, mds->m_specularColor);
 }
@@ -203,9 +203,9 @@ void setSpecularColor(float r, float g, float b)
 void setShininess(float s)
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     mds->m_shininess = (GLfloat)s;
-    
+
     if (mds->m_drawMode == NORMAL)
         glMaterialf( GL_FRONT, GL_SHININESS, mds->m_shininess);
 }
@@ -224,29 +224,29 @@ bool openRayFile(const char rayFileName[])
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
 
-	fprintf(stderr, "Warning: Ray file may render differently.\n");
-    
+    fprintf(stderr, "Warning: Ray file may render differently.\n");
+
     if (!rayFileName)
         return false;
-    
+
     if (mds->m_rayFile) 
         closeRayFile();
-    
+
     //mds->m_rayFile = fopen(rayFileName, "w");
-	mds->m_rayFile = NULL;
-	fopen_s(&(mds->m_rayFile), rayFileName, "w");
-    
+    mds->m_rayFile = NULL;
+    fopen_s(&(mds->m_rayFile), rayFileName, "w");
+
     if (mds->m_rayFile != NULL) 
     {
-		/*
+        /*
         fprintf( mds->m_rayFile, "SBT-raytracer 1.0\n\n" );
         fprintf( mds->m_rayFile, "camera { fov=30; position=(0,0.8,5); direction=(0,-0.8,-5); }\n\n" );
         fprintf( mds->m_rayFile, 
-            "directional_light { direction=(-1,-2,-1); color=(0.7,0.7,0.7); }\n\n" );
-			*/
+        "directional_light { direction=(-1,-2,-1); color=(0.7,0.7,0.7); }\n\n" );
+        */
 
-		fprintf( mds->m_rayFile, "SBT-raytracer 1.0\n\n" );
-		
+        fprintf( mds->m_rayFile, "SBT-raytracer 1.0\n\n" );
+
         return true;
     }
     else
@@ -256,83 +256,83 @@ bool openRayFile(const char rayFileName[])
 static void _setupOpenGl()
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-	switch (mds->m_drawMode)
-	{
-	case NORMAL:
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glShadeModel(GL_SMOOTH);
-		break;
-	case FLATSHADE:
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glShadeModel(GL_FLAT);
-		break;
-	case WIREFRAME:
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glShadeModel(GL_FLAT);
-	default:
-		break;
-	}
+    switch (mds->m_drawMode)
+    {
+    case NORMAL:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glShadeModel(GL_SMOOTH);
+        break;
+    case FLATSHADE:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glShadeModel(GL_FLAT);
+        break;
+    case WIREFRAME:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glShadeModel(GL_FLAT);
+    default:
+        break;
+    }
 
 }
 
 void closeRayFile()
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
-    
+
     if (mds->m_rayFile) 
         fclose(mds->m_rayFile);
-    
+
     mds->m_rayFile = NULL;
 }
 
 void drawAxes()
 {
-	// Draw the origin
-	glPushMatrix();
-	glScalef(5,5,5);
+    // Draw the origin
+    glPushMatrix();
+    glScalef(5,5,5);
 
-	glShadeModel(GL_FLAT);
-	glDisable(GL_LIGHTING);
-	glBegin(GL_LINES);
-		// x axis
-		glColor3f(1.0, 0.0, 0.0);
-		glVertex3d( 0.0, 0.0, 0.0 );
-		glVertex3d( 1.0, 0.0, 0.0 );
+    glShadeModel(GL_FLAT);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_LINES);
+    // x axis
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3d( 0.0, 0.0, 0.0 );
+    glVertex3d( 1.0, 0.0, 0.0 );
 
-		// y axis
-		glColor3f(0.0, 1.0, 0.0);
-		glVertex3d( 0.0, 0.0, 0.0 );
-		glVertex3d( 0.0, 1.0, 0.0 );
+    // y axis
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex3d( 0.0, 0.0, 0.0 );
+    glVertex3d( 0.0, 1.0, 0.0 );
 
-		// z axis
-		glColor3f(0.0, 0.0, 1.0);
-		glVertex3d( 0.0, 0.0, 0.0 );
-		glVertex3d( 0.0, 0.0, 1.0 );
-	glEnd();
+    // z axis
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3d( 0.0, 0.0, 0.0 );
+    glVertex3d( 0.0, 0.0, 1.0 );
+    glEnd();
 
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glRasterPos3f(1.2f, 0.0f, 0.0f);
-	printString("X");
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glRasterPos3f(1.2f, 0.0f, 0.0f);
+    printString("X");
 
-	glColor3f(0.0, 1, 0.0);
-	glRasterPos3f(0.0f, 1.2f, 0.0f);
-	printString("Y");
+    glColor3f(0.0, 1, 0.0);
+    glRasterPos3f(0.0f, 1.2f, 0.0f);
+    printString("Y");
 
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glRasterPos3f(0.0f, 0.0f, 1.2f);
-	printString("Z");
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glRasterPos3f(0.0f, 0.0f, 1.2f);
+    printString("Z");
 
-	glPopMatrix();
+    glPopMatrix();
 
-	glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
 }
 
 void drawSphere(double r)
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
 
-	_setupOpenGl();
-    
+    _setupOpenGl();
+
     if (mds->m_rayFile)
     {
         _dump_current_modelview();
@@ -355,72 +355,72 @@ void drawSphere(double r)
             divisions = 8; break;
         }
 
-		GLUquadricObj* gluq = gluNewQuadric();
+        GLUquadricObj* gluq = gluNewQuadric();
         gluQuadricDrawStyle( gluq, GLU_FILL );
-		gluQuadricNormals( gluq, GLU_SMOOTH );
-		glShadeModel(GL_SMOOTH);
+        gluQuadricNormals( gluq, GLU_SMOOTH );
+        glShadeModel(GL_SMOOTH);
         gluQuadricTexture( gluq, GL_TRUE );
-		
+
         gluSphere(gluq, r, divisions, divisions);
-		
-		glShadeModel(GL_SMOOTH);
+
+        glShadeModel(GL_SMOOTH);
         gluDeleteQuadric( gluq );
     }
 }
 
 int load_2dcurve_txt(const char* filename,std::vector<Point2d>* pts) {
-	std::ifstream infile( filename );
-	if ( infile.is_open() ) {
+    std::ifstream infile( filename );
+    if ( infile.is_open() ) {
 
-		pts->clear();
+        pts->clear();
 
-		float x,y;
-		while ( (infile >> x) && (infile >> y) ) {
-			Point2d p;
-			p.x = x;
-			p.y = y;
-			pts->push_back( p );
-		}
-		infile.close();
-	} else {
-		return -1;
-	}
+        float x,y;
+        while ( (infile >> x) && (infile >> y) ) {
+            Point2d p;
+            p.x = x;
+            p.y = y;
+            pts->push_back( p );
+        }
+        infile.close();
+    } else {
+        return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 
 std::vector<Point2d> revolution_pts;
 
 int reload_curve_file(const char* filename) {
-	int load_ret = load_2dcurve_txt( filename, &revolution_pts );
-	if ( load_ret < 0 ) {
-		printf( "Cannot open curve file: %s.\n", filename );
-	}
+    int load_ret = load_2dcurve_txt( filename, &revolution_pts );
+    if ( load_ret < 0 ) {
+        printf( "Cannot open curve file: %s.\n", filename );
+    }
 
-	return load_ret;
+    return load_ret;
 }
 
 void init_load_curve_file() {
-	int load_ret = load_2dcurve_txt( "curves/sample1_curve.apts", &revolution_pts );
-	if ( load_ret < 0 ) {
-		printf( "Cannot open curve file.\n" );
-		return;
-	}
+    int load_ret = load_2dcurve_txt( "curves/sample1_curve.apts", &revolution_pts );
+    if ( load_ret < 0 ) {
+        printf( "Cannot open curve file.\n" );
+        return;
+    }
 }
 
 void drawRevolution(double scale)
 {
-	if ( revolution_pts.empty() ) {
-		return;
-	}
+    if ( revolution_pts.empty() ) {
+        return;
+    }
     ModelerDrawState *mds = ModelerDrawState::Instance();
 
-	_setupOpenGl();
-    
+    _setupOpenGl();
+
     if (mds->m_rayFile)
     {
-		// write into rayfile
+        // write into rayfile
     }
     else
     {
@@ -437,73 +437,73 @@ void drawRevolution(double scale)
             divisions = 8; break;
         }
 
-		const float PI = 3.14159265f;
+        const float PI = 3.14159265f;
 
-		float origin_y = 1.13132490911795f;
-		float origin_z = -3.0f;
+        float origin_y = 1.13132490911795f;
+        float origin_z = -3.0f;
 
-		int num_pts = revolution_pts.size();
-		for ( int i=0; i<6; ++ i ) {
-			// This implementation uses glBegin(GL_TRIANGLES)/glend() and has trivial normals and texture coordinates.
-			// It is OK to start from the code below for developing and testing,
-			// but please use glDrawElements() with GL_TRIANGES to draw the surface in the final code.
-			// It is a naive version of surface of revolution created by translating a curve along a straight line.
-			// You need to rotate the curve to create a more interesting shape. Also, please create your own curve with the curve editor tool. Good luck!						
-			for ( int j=1; j<num_pts; ++ j ) {
-				
-				float p1_x = (float)(revolution_pts[j-1].x * scale);
-				float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
-				float p1_z = i+origin_z;
+        int num_pts = revolution_pts.size();
+        for ( int i=0; i<6; ++ i ) {
+            // This implementation uses glBegin(GL_TRIANGLES)/glend() and has trivial normals and texture coordinates.
+            // It is OK to start from the code below for developing and testing,
+            // but please use glDrawElements() with GL_TRIANGES to draw the surface in the final code.
+            // It is a naive version of surface of revolution created by translating a curve along a straight line.
+            // You need to rotate the curve to create a more interesting shape. Also, please create your own curve with the curve editor tool. Good luck!						
+            for ( int j=1; j<num_pts; ++ j ) {
 
-				float p2_x = (float)(revolution_pts[j].x * scale);
-				float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
-				float p2_z = p1_z;
+                float p1_x = (float)(revolution_pts[j-1].x * scale);
+                float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
+                float p1_z = i+origin_z;
 
-				float p3_x = p1_x;
-				float p3_y = p1_y;
-				float p3_z = p1_z+1;
+                float p2_x = (float)(revolution_pts[j].x * scale);
+                float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
+                float p2_z = p1_z;
 
-				float p4_x = p2_x;
-				float p4_y = p2_y;
-				float p4_z = p3_z;
+                float p3_x = p1_x;
+                float p3_y = p1_y;
+                float p3_z = p1_z+1;
 
-				// You must compute the normal directions add texture coordinates, see lecture notes
-				float n1_x = 1;
-				float n1_y = 0;
-				float n1_z = 0;
-				float texture_u = 1.0f;
-				float texture_v = 1.0f;
+                float p4_x = p2_x;
+                float p4_y = p2_y;
+                float p4_z = p3_z;
 
-				glBegin(GL_TRIANGLES);
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p1_x, p1_y, p1_z);
-					
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p2_x, p2_y, p2_z);
+                // You must compute the normal directions add texture coordinates, see lecture notes
+                float n1_x = 1;
+                float n1_y = 0;
+                float n1_z = 0;
+                float texture_u = 1.0f;
+                float texture_v = 1.0f;
 
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p3_x, p3_y, p3_z);
-				glEnd();
+                glBegin(GL_TRIANGLES);
+                glNormal3f(n1_x,n1_y,n1_z);
+                glTexCoord2f( texture_u, texture_v);
+                glVertex3f(p1_x, p1_y, p1_z);
 
-				glBegin(GL_TRIANGLES);
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p3_x, p3_y, p3_z);					
-					
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p2_x, p2_y, p2_z);
+                glNormal3f(n1_x,n1_y,n1_z);
+                glTexCoord2f( texture_u, texture_v);
+                glVertex3f(p2_x, p2_y, p2_z);
 
-					glNormal3f(n1_x,n1_y,n1_z);
-					glTexCoord2f( texture_u, texture_v);
-					glVertex3f(p4_x, p4_y, p4_z);
-				glEnd();
-			}
-		}
-		
+                glNormal3f(n1_x,n1_y,n1_z);
+                glTexCoord2f( texture_u, texture_v);
+                glVertex3f(p3_x, p3_y, p3_z);
+                glEnd();
+
+                glBegin(GL_TRIANGLES);
+                glNormal3f(n1_x,n1_y,n1_z);
+                glTexCoord2f( texture_u, texture_v);
+                glVertex3f(p3_x, p3_y, p3_z);
+
+                glNormal3f(n1_x,n1_y,n1_z);
+                glTexCoord2f( texture_u, texture_v);
+                glVertex3f(p2_x, p2_y, p2_z);
+
+                glNormal3f(n1_x,n1_y,n1_z);
+                glTexCoord2f( texture_u, texture_v);
+                glVertex3f(p4_x, p4_y, p4_z);
+                glEnd();
+            }
+        }
+
     }
 }
 
@@ -512,8 +512,8 @@ void drawBox( double x, double y, double z )
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
 
-	_setupOpenGl();
-    
+    _setupOpenGl();
+
     if (mds->m_rayFile)
     {
         _dump_current_modelview();
@@ -527,53 +527,53 @@ void drawBox( double x, double y, double z )
         /* remember which matrix mode OpenGL was in. */
         int savemode;
         glGetIntegerv( GL_MATRIX_MODE, &savemode );
-        
+
         /* switch to the model matrix and scale by x,y,z. */
         glMatrixMode( GL_MODELVIEW );
 
         glPushMatrix();
         glScaled( x, y, z );
-        
+
         glBegin( GL_QUADS );
-        
+
         glNormal3d( 0.0, 0.0, -1.0 );
         glVertex3d( 0.0, 0.0, 0.0 );
-		glVertex3d( 0.0, 1.0, 0.0 );
+        glVertex3d( 0.0, 1.0, 0.0 );
         glVertex3d( 1.0, 1.0, 0.0 );
-		glVertex3d( 1.0, 0.0, 0.0 );
-        
+        glVertex3d( 1.0, 0.0, 0.0 );
+
         glNormal3d( 0.0, -1.0, 0.0 );
         glVertex3d( 0.0, 0.0, 0.0 );
-		glVertex3d( 1.0, 0.0, 0.0 );
+        glVertex3d( 1.0, 0.0, 0.0 );
         glVertex3d( 1.0, 0.0, 1.0 );
-		glVertex3d( 0.0, 0.0, 1.0 );
-        
+        glVertex3d( 0.0, 0.0, 1.0 );
+
         glNormal3d( -1.0, 0.0, 0.0 );
         glVertex3d( 0.0, 0.0, 0.0 );
-		glVertex3d( 0.0, 0.0, 1.0 );
+        glVertex3d( 0.0, 0.0, 1.0 );
         glVertex3d( 0.0, 1.0, 1.0 );
-		glVertex3d( 0.0, 1.0, 0.0 );
-        
+        glVertex3d( 0.0, 1.0, 0.0 );
+
         glNormal3d( 0.0, 0.0, 1.0 );
         glVertex3d( 0.0, 0.0, 1.0 );
-		glVertex3d( 1.0, 0.0, 1.0 );
+        glVertex3d( 1.0, 0.0, 1.0 );
         glVertex3d( 1.0, 1.0, 1.0 );
-		glVertex3d( 0.0, 1.0, 1.0 );
-        
+        glVertex3d( 0.0, 1.0, 1.0 );
+
         glNormal3d( 0.0, 1.0, 0.0 );
         glVertex3d( 0.0, 1.0, 0.0 );
-		glVertex3d( 0.0, 1.0, 1.0 );
+        glVertex3d( 0.0, 1.0, 1.0 );
         glVertex3d( 1.0, 1.0, 1.0 );
-		glVertex3d( 1.0, 1.0, 0.0 );
-        
+        glVertex3d( 1.0, 1.0, 0.0 );
+
         glNormal3d( 1.0, 0.0, 0.0 );
         glVertex3d( 1.0, 0.0, 0.0 );
-		glVertex3d( 1.0, 1.0, 0.0 );
+        glVertex3d( 1.0, 1.0, 0.0 );
         glVertex3d( 1.0, 1.0, 1.0 );
-		glVertex3d( 1.0, 0.0, 1.0 );
-        
+        glVertex3d( 1.0, 0.0, 1.0 );
+
         glEnd();
-        
+
         /* restore the model matrix stack, and switch back to the matrix
         mode we were in. */
         glPopMatrix();
@@ -586,8 +586,8 @@ void drawCylinder( double h, double r1, double r2 )
     ModelerDrawState *mds = ModelerDrawState::Instance();
     int divisions;
 
-	_setupOpenGl();
-    
+    _setupOpenGl();
+
     switch(mds->m_quality)
     {
     case HIGH: 
@@ -599,7 +599,7 @@ void drawCylinder( double h, double r1, double r2 )
     case POOR:
         divisions = 8; break;
     }
-    
+
     if (mds->m_rayFile)
     {
         _dump_current_modelview();
@@ -610,22 +610,22 @@ void drawCylinder( double h, double r1, double r2 )
     }
     else
     {
-		//////// BEGIN YOUR CYLINDER CODE /////////
-		// ... if you are replacing the cylinder.
+        //////// BEGIN YOUR CYLINDER CODE /////////
+        // ... if you are replacing the cylinder.
         GLUquadricObj* gluq;
-        
+
         /* GLU will again do the work.  draw the sides of the cylinder. */
         gluq = gluNewQuadric();
         gluQuadricDrawStyle( gluq, GLU_FILL );
         gluQuadricTexture( gluq, GL_TRUE );
         gluCylinder( gluq, r1, r2, h, divisions, divisions);
         gluDeleteQuadric( gluq );
-        
+
         if ( r1 > 0.0 )
         {
-        /* if the r1 end does not come to a point, draw a flat disk to
+            /* if the r1 end does not come to a point, draw a flat disk to
             cover it up. */
-            
+
             gluq = gluNewQuadric();
             gluQuadricDrawStyle( gluq, GLU_FILL );
             gluQuadricTexture( gluq, GL_TRUE );
@@ -633,21 +633,21 @@ void drawCylinder( double h, double r1, double r2 )
             gluDisk( gluq, 0.0, r1, divisions, divisions);
             gluDeleteQuadric( gluq );
         }
-        
+
         if ( r2 > 0.0 )
         {
-        /* if the r2 end does not come to a point, draw a flat disk to
+            /* if the r2 end does not come to a point, draw a flat disk to
             cover it up. */
-            
+
             /* save the current matrix mode. */	
             int savemode;
             glGetIntegerv( GL_MATRIX_MODE, &savemode );
-            
+
             /* translate the origin to the other end of the cylinder. */
             glMatrixMode( GL_MODELVIEW );
             glPushMatrix();
             glTranslated( 0.0, 0.0, h );
-            
+
             /* draw a disk centered at the new origin. */
             gluq = gluNewQuadric();
             gluQuadricDrawStyle( gluq, GLU_FILL );
@@ -655,12 +655,12 @@ void drawCylinder( double h, double r1, double r2 )
             gluQuadricOrientation( gluq, GLU_OUTSIDE );
             gluDisk( gluq, 0.0, r2, divisions, divisions);
             gluDeleteQuadric( gluq );
-            
+
             /* restore the matrix stack and mode. */
             glPopMatrix();
             glMatrixMode( savemode );
         }
-		//////// END YOUR CYLINDER CODE /////////
+        //////// END YOUR CYLINDER CODE /////////
     }
 }
 
@@ -669,12 +669,12 @@ void drawCylinder( double h, double r1, double r2 )
 // specify the vertices (x1,y1,z1), (x2,y2,z2), (x3,y3,z3) in
 // *counterclockwise* order.
 void drawTriangle( double x1, double y1, double z1,
-                   double x2, double y2, double z2,
-                   double x3, double y3, double z3 )
+                  double x2, double y2, double z2,
+                  double x3, double y3, double z3 )
 {
     ModelerDrawState *mds = ModelerDrawState::Instance();
 
-	_setupOpenGl();
+    _setupOpenGl();
 
     if (mds->m_rayFile)
     {
@@ -687,16 +687,16 @@ void drawTriangle( double x1, double y1, double z1,
     else
     {
         double a, b, c, d, e, f;
-        
+
         /* the normal to the triangle is the cross product of two of its edges. */
         a = x2-x1;
         b = y2-y1;
         c = z2-z1;
-        
+
         d = x3-x1;
         e = y3-y1;
         f = z3-z1;
-        
+
         glBegin( GL_TRIANGLES );
         glNormal3d( b*f - c*e, c*d - a*f, a*e - b*d );
         glVertex3d( x1, y1, z1 );
@@ -705,15 +705,4 @@ void drawTriangle( double x1, double y1, double z1,
         glEnd();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
