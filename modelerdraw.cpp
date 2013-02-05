@@ -459,55 +459,54 @@ void drawRevolution(double scale)
 
             float radian = i * (PI / 180);
 
-            /*float p1_x = cos(radian) * (10);
-            float p1_y = origin_y;
-            float p1_z = sin(radian) * (10);*/
+            for ( int j=1; j<num_pts; ++ j ) {
 
-            //for ( int j=1; j<num_pts; ++ j ) {
+                //
+                // Rotate about the y-axis using the x coordinate as the radius
+                //
+                // Compute Pt #1
+                //
+                float size1 = (float)(revolution_pts[j-1].x * scale);
+                float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
+                float p1_x = cos(radian)*(size1);
+                float p1_z = sin(radian)*(size1);
 
-            //    float p1_x = (float)(revolution_pts[j-1].x * scale);
-            //    float p1_y = (float)(revolution_pts[j-1].y * scale + origin_y);
-            //    float p1_z = i+origin_z;
+                //
+                // Compute Pt #2
+                //
+                float size2 = (float)(revolution_pts[j].x * scale);
+                float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
+                float p2_x = cos(radian)*(size2);
+                float p2_z = sin(radian)*(size2);
 
-            float p1_x = cos(radian)*(5);
-            float p1_y = origin_y;
-            float p1_z = sin(radian)*(5);
+
+                //
+                // Ensure that surface of revolution does not overlap.
+                //
+                float temp_radian;
+                if(i + step_size > 360)
+                {
+                    temp_radian = 0;
+                }
+                else
+                {
+                    temp_radian = (i + step_size) * (PI / 180);
+                }
+
+                //
+                // Compute Pt #3
+                //
+                float p3_x = cos(temp_radian)*(size1);
+                float p3_y = p1_y;
+                float p3_z = sin(temp_radian)*(size1);
 
 
-            //    float p2_x = (float)(revolution_pts[j].x * scale);
-            //    float p2_y = (float)(revolution_pts[j].y * scale + origin_y);
-            //    float p2_z = p1_z;
-
-            float p2_x = cos(radian)*(5 + 1);
-            float p2_y = origin_y + 1;
-            float p2_z = sin(radian)*(5 + 1);
-
-            //    //
-            //    // calculate x,z for rotation about the y-axis
-            //    //
-            //    //float p3_x = cos(radian) * (.5*p1_x);
-            //    //float p3_y = p1_y;
-            //    //float p3_z = sin(radian) * (.5*p1_z);
-
-            //float p3_x = p1_x;
-            //float p3_y = p1_y;
-            float temp_radian;
-            if(i + step_size > 360)
-            {
-                temp_radian = 0;
-            }
-            else
-            {
-                temp_radian = (i + step_size) * (PI / 180);
-            }
-
-            float p3_x = cos(temp_radian)*(5);
-            float p3_y = p1_y;
-            float p3_z = sin(temp_radian)*(5); //p1_z+1.0;
-
-            float p4_x = cos(temp_radian)*(5+1); //p2_x;
-            float p4_y = p2_y;
-            float p4_z = sin(temp_radian)*(5+1); //p3_z;
+                //
+                // Compute Pt #4
+                //
+                float p4_x = cos(temp_radian)*(size2);
+                float p4_y = p2_y;
+                float p4_z = sin(temp_radian)*(size2);
 
                 // You must compute the normal directions, add texture coordinates, see lecture notes
                 float n1_x = 1;
@@ -545,7 +544,7 @@ void drawRevolution(double scale)
                 glVertex3f(p4_x, p4_y, p4_z);
                 glEnd();
 
-            //}
+            }
         }
         //glEnd();
     }
