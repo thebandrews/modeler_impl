@@ -447,10 +447,23 @@ void drawRevolution(double scale)
 
         int num_pts = revolution_pts.size();
 
+        float * vertices = new float[12*num_pts];
+        float * normals = new float[12*num_pts];
+        int * indices = new int[6*num_pts];
+        float * texture_uv = new float[8*num_pts];
+
+        int v_idx = 0;
+        int n_idx = 0;
+        int i_idx = 0;
+        int t_idx = 0;
+
+        int idx_offset = 0;
+
         int step_size = 360 / divisions;
 
-        for(int i = 0; i < 360; i += step_size)
-        {
+        int i = 0;
+        //for(int i = 0; i < 360; i += step_size)
+        //{
             // This implementation uses glBegin(GL_TRIANGLES)/glend() and has trivial normals and texture coordinates.
             // It is OK to start from the code below for developing and testing,
             // but please use glDrawElements() with GL_TRIANGES to draw the surface in the final code.
@@ -471,6 +484,17 @@ void drawRevolution(double scale)
                 float p1_x = cos(radian)*(size1);
                 float p1_z = sin(radian)*(size1);
 
+                vertices[v_idx++] = p1_x;
+                vertices[v_idx++] = p1_y;
+                vertices[v_idx++] = p1_z;
+
+                normals[n_idx++] = 0;
+                normals[n_idx++] = 1;
+                normals[n_idx++] = 0;
+
+                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = 1.0;
+
                 //
                 // Compute Pt #2
                 //
@@ -479,6 +503,16 @@ void drawRevolution(double scale)
                 float p2_x = cos(radian)*(size2);
                 float p2_z = sin(radian)*(size2);
 
+                vertices[v_idx++] = p2_x;
+                vertices[v_idx++] = p2_y;
+                vertices[v_idx++] = p2_z;
+
+                normals[n_idx++] = 0;
+                normals[n_idx++] = 1;
+                normals[n_idx++] = 0;
+
+                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = 1.0;
 
                 //
                 // Ensure that surface of revolution does not overlap.
@@ -500,6 +534,17 @@ void drawRevolution(double scale)
                 float p3_y = p1_y;
                 float p3_z = sin(temp_radian)*(size1);
 
+                vertices[v_idx++] = p3_x;
+                vertices[v_idx++] = p3_y;
+                vertices[v_idx++] = p3_z;
+
+                normals[n_idx++] = 0;
+                normals[n_idx++] = 1;
+                normals[n_idx++] = 0;
+
+                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = 1.0;
+
 
                 //
                 // Compute Pt #4
@@ -508,8 +553,34 @@ void drawRevolution(double scale)
                 float p4_y = p2_y;
                 float p4_z = sin(temp_radian)*(size2);
 
+                vertices[v_idx++] = p4_x;
+                vertices[v_idx++] = p4_y;
+                vertices[v_idx++] = p4_z;
+
+                normals[n_idx++] = 0;
+                normals[n_idx++] = 1;
+                normals[n_idx++] = 0;
+
+                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = 1.0;
+
+
+                indices[i_idx++] = 0 + idx_offset;
+                indices[i_idx++] = 1 + idx_offset;
+                indices[i_idx++] = 3 + idx_offset;
+
+                indices[i_idx++] = 0 + idx_offset;
+                indices[i_idx++] = 3 + idx_offset;
+                indices[i_idx++] = 2 + idx_offset;
+
+                //
+                // We add 4 points to the vertices array each pass
+                // so increment the offset by 4.
+                //
+                idx_offset += 4;
+
                 // You must compute the normal directions, add texture coordinates, see lecture notes
-                float n1_x = 1;
+                /*float n1_x = 1;
                 float n1_y = 0;
                 float n1_z = 0;
                 float texture_u = 1.0f;
@@ -542,10 +613,44 @@ void drawRevolution(double scale)
                 glNormal3f(n1_x,n1_y,n1_z);
                 glTexCoord2f( texture_u, texture_v);
                 glVertex3f(p4_x, p4_y, p4_z);
-                glEnd();
+                glEnd();*/
 
             }
-        }
+        //}
+
+        //printf("vertices size = %d, normals size = %d, indices size = %d\n", v_idx, n_idx, i_idx);
+
+        //// preparing the data for the vertices positions
+        //GLfloat vertices[12] = { 0,0,0,   0,0,-1,   1,0,0,   1,0,-1 };
+
+        //// normal directions
+        //GLfloat normals[12] = {0,1,0,  0,1,0,  0,1,0,  0,1,0};
+
+        //// texture coordinate
+        //GLfloat texture_uv[8] = {1,1,  1,1,  1,1,  1,1};
+
+        //// vertex indices to form triangles, the order of the 
+        //// vertices follows the right hand rule
+        //GLuint indices[6] = { 1,0,2,   1,2,3 };
+        //int indices_length = 6;
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        //glEnableClientState(GL_NORMAL_ARRAY);
+        //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        //glNormalPointer(GL_FLOAT,0,normals);
+        //glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
+        glDrawElements(GL_TRIANGLES, i_idx, GL_UNSIGNED_INT, indices);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDisableClientState(GL_NORMAL_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
+
+
+        delete [] vertices;
+        delete [] normals;
+        delete [] indices;
+        delete [] texture_uv;
+
         //glEnd();
     }
 }
