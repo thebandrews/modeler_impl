@@ -1,4 +1,5 @@
 #include "modelerdraw.h"
+#include "vec.h"
 #include <FL/gl.h>
 #include <GL/glu.h>
 #include <cstdio>
@@ -6,6 +7,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <sstream>
+#include <math.h>
 
 // Helper functions from the red book so we can print text on the
 // screen.
@@ -480,11 +482,9 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(radian)*(size1);
                 vertices[v_idx++] = (float)(revolution_pts[j-1].y * scale + origin_y);
                 vertices[v_idx++] = sin(radian)*(size1);
-                normals[n_idx++] = 0;
-                normals[n_idx++] = 1;
-                normals[n_idx++] = 0;
                 texture_uv[t_idx++] = 1.0;
                 texture_uv[t_idx++] = 1.0;
+
 
                 //
                 // Compute Pt #2
@@ -493,11 +493,9 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(radian)*(size2);
                 vertices[v_idx++] = (float)(revolution_pts[j].y * scale + origin_y);
                 vertices[v_idx++] = sin(radian)*(size2);
-                normals[n_idx++] = 0;
-                normals[n_idx++] = 1;
-                normals[n_idx++] = 0;
                 texture_uv[t_idx++] = 1.0;
                 texture_uv[t_idx++] = 1.0;
+
 
                 //
                 // Ensure that surface of revolution does not overlap.
@@ -512,17 +510,13 @@ void drawRevolution(double scale)
                     temp_radian = (i + step_size) * (PI / 180);
                 }
 
+
                 //
                 // Compute Pt #3
                 //
                 vertices[v_idx++] = cos(temp_radian)*(size1);
                 vertices[v_idx++] = vertices[v_idx - 6];
                 vertices[v_idx++] = sin(temp_radian)*(size1);
-
-                normals[n_idx++] = 0;
-                normals[n_idx++] = 1;
-                normals[n_idx++] = 0;
-
                 texture_uv[t_idx++] = 1.0;
                 texture_uv[t_idx++] = 1.0;
 
@@ -533,13 +527,109 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(temp_radian)*(size2);
                 vertices[v_idx++] = vertices[v_idx - 6];
                 vertices[v_idx++] = sin(temp_radian)*(size2);
-
-                normals[n_idx++] = 0;
-                normals[n_idx++] = 1;
-                normals[n_idx++] = 0;
-
                 texture_uv[t_idx++] = 1.0;
                 texture_uv[t_idx++] = 1.0;
+
+
+                ///////////////////////////////////////////////////////////////
+                // 
+                // Compute Normals
+                //
+                // TODO: Points are kinda far apart so normals look a little bit
+                // like normals to the plane instead of normals to the vertex.
+                //
+                ///////////////////////////////////////////////////////////////
+
+                //
+                // Calculate normal for p1
+                //
+
+                // (p2 - p1)
+                Vec3f vec_1(vertices[v_idx-9]-vertices[v_idx-12],
+                            vertices[v_idx-8]-vertices[v_idx-11],
+                            vertices[v_idx-7]-vertices[v_idx-10]);
+
+                // (p3 - p1)
+                Vec3f vec_2(vertices[v_idx-6]-vertices[v_idx-12],
+                            vertices[v_idx-5]-vertices[v_idx-11],
+                            vertices[v_idx-4]-vertices[v_idx-10]);
+
+                Vec3f tempNormal = vec_2 ^ vec_1;
+
+
+                normals[n_idx++] = tempNormal[0];
+                normals[n_idx++] = tempNormal[1];
+                normals[n_idx++] = tempNormal[2];
+
+                //
+                // calculate normal for p2
+                //
+
+                // (p4 - p2)
+                Vec3f vec_3(vertices[v_idx-3]-vertices[v_idx-9],
+                            vertices[v_idx-2]-vertices[v_idx-8],
+                            vertices[v_idx-1]-vertices[v_idx-7]);
+
+                //
+                // (p3 - p2)
+                //
+                Vec3f vec_4(vertices[v_idx-6]-vertices[v_idx-9],
+                            vertices[v_idx-5]-vertices[v_idx-8],
+                            vertices[v_idx-4]-vertices[v_idx-7]);
+
+                tempNormal = vec_4 ^ vec_3;
+
+                normals[n_idx++] = tempNormal[0];
+                normals[n_idx++] = tempNormal[1];
+                normals[n_idx++] = tempNormal[2];
+
+                //
+                // calculate normal for p3
+                //
+
+                // (p2 - p3)
+                Vec3f vec_5(vertices[v_idx-9]-vertices[v_idx-6],
+                            vertices[v_idx-8]-vertices[v_idx-5],
+                            vertices[v_idx-7]-vertices[v_idx-4]);
+
+                //
+                // (p4 - p3)
+                //
+                Vec3f vec_6(vertices[v_idx-3]-vertices[v_idx-6],
+                            vertices[v_idx-2]-vertices[v_idx-5],
+                            vertices[v_idx-1]-vertices[v_idx-4]);
+
+                tempNormal = vec_6 ^ vec_5;
+
+                normals[n_idx++] = tempNormal[0];
+                normals[n_idx++] = tempNormal[1];
+                normals[n_idx++] = tempNormal[2];
+
+
+                //
+                // calculate normal for p4
+                //
+
+                // (p3 - p4)
+                Vec3f vec_7(vertices[v_idx-6]-vertices[v_idx-3],
+                            vertices[v_idx-5]-vertices[v_idx-2],
+                            vertices[v_idx-4]-vertices[v_idx-1]);
+
+                //
+                // (p2 - p4)
+                //
+                Vec3f vec_8(vertices[v_idx-9]-vertices[v_idx-3],
+                            vertices[v_idx-8]-vertices[v_idx-2],
+                            vertices[v_idx-7]-vertices[v_idx-1]);
+
+                tempNormal = vec_8 ^ vec_7;
+
+
+                normals[n_idx++] = tempNormal[0];
+                normals[n_idx++] = tempNormal[1];
+                normals[n_idx++] = tempNormal[2];
+
+                ///////////////////////////////////////////////////////////////
 
 
                 //
@@ -562,10 +652,10 @@ void drawRevolution(double scale)
         }
 
         glEnableClientState(GL_VERTEX_ARRAY);
-        //glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
         //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
-        //glNormalPointer(GL_FLOAT,0,normals);
+        glNormalPointer(GL_FLOAT,0,normals);
         //glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
         glDrawElements(GL_TRIANGLES, i_idx, GL_UNSIGNED_INT, indices);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
