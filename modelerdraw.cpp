@@ -473,7 +473,7 @@ void drawRevolution(double scale)
         while(rotation < 360.0)
         {
             float radian = rotation * (PI / 180);
-            float radian_p = (float)(rotation + 0.5)* (PI / 180);
+            float radian_p = (float)(rotation + 0.0005)* (PI / 180);
 
             for ( int j=1; j<num_pts; ++ j ) {
 
@@ -517,7 +517,7 @@ void drawRevolution(double scale)
                 // Rotate by step size to get the second two points in our triangle matrix
                 //
                 float temp_radian = (rotation + step_size) * (PI / 180);
-                radian_p = (float)((rotation + step_size - 0.5) * (PI / 180));
+                radian_p = (float)((rotation + step_size - 0.0005) * (PI / 180));
 
 
                 //
