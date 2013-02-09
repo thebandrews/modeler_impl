@@ -473,6 +473,7 @@ void drawRevolution(double scale)
         while(rotation < 360.0)
         {
             float radian = rotation * (PI / 180);
+            float radian_p = (float)(rotation + 0.5)* (PI / 180);
 
             for ( int j=1; j<num_pts; ++ j ) {
 
@@ -486,6 +487,13 @@ void drawRevolution(double scale)
                 texture_uv[t_idx++] = radian / (2*PI);  // s
                 texture_uv[t_idx++] = (float)(j -1)/num_pts;  // t
 
+                //
+                // Compute Pt #1 prime - for normal calculations
+                //
+                float p1p_x = cos(radian_p)*(size1);
+                float p1p_y = vertices[v_idx-2];
+                float p1p_z = sin(radian_p)*(size1);
+
 
                 //
                 // Compute Pt #2
@@ -497,12 +505,19 @@ void drawRevolution(double scale)
                 texture_uv[t_idx++] = radian / (2*PI);  // s
                 texture_uv[t_idx++] = (float)(j)/num_pts;  // t
 
+                //
+                // Compute Pt #2 prime - for normal calculations
+                //
+                float p2p_x = cos(radian_p)*(size2);
+                float p2p_y = vertices[v_idx-2];
+                float p2p_z = sin(radian_p)*(size2);
+
 
                 //
                 // Rotate by step size to get the second two points in our triangle matrix
                 //
                 float temp_radian = (rotation + step_size) * (PI / 180);
-
+                radian_p = (float)((rotation + step_size - 0.5) * (PI / 180));
 
 
                 //
@@ -514,6 +529,13 @@ void drawRevolution(double scale)
                 texture_uv[t_idx++] = ((rotation + step_size) * (PI / 180)) / (2*PI);  // s
                 texture_uv[t_idx++] = (float)(j -1)/num_pts;  // t
 
+                //
+                // Compute Pt #3 prime - for normal calculations
+                //
+                float p3p_x = cos(radian_p)*(size1);
+                float p3p_y = vertices[v_idx-2];
+                float p3p_z = sin(radian_p)*(size1);
+
 
                 //
                 // Compute Pt #4
@@ -523,6 +545,13 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = sin(temp_radian)*(size2);
                 texture_uv[t_idx++] = ((rotation + step_size) * (PI / 180)) / (2*PI);  // s
                 texture_uv[t_idx++] = (float)(j)/num_pts;  // t
+
+                //
+                // Compute Pt #4 prime - for normal calculations
+                //
+                float p4p_x = cos(radian_p)*(size2);
+                float p4p_y = vertices[v_idx-2];
+                float p4p_z = sin(radian_p)*(size2);
 
 
                 ///////////////////////////////////////////////////////////////
@@ -543,10 +572,10 @@ void drawRevolution(double scale)
                     vertices[v_idx-8]-vertices[v_idx-11],
                     vertices[v_idx-7]-vertices[v_idx-10]);
 
-                // (p3 - p1)
-                Vec3f vec_2(vertices[v_idx-6]-vertices[v_idx-12],
-                    vertices[v_idx-5]-vertices[v_idx-11],
-                    vertices[v_idx-4]-vertices[v_idx-10]);
+                // (p3,p1p - p1)
+                Vec3f vec_2(p1p_x-vertices[v_idx-12],
+                            p1p_y-vertices[v_idx-11],
+                            p1p_z-vertices[v_idx-10]);
 
                 Vec3f tempNormal = vec_2 ^ vec_1;
 
@@ -559,17 +588,17 @@ void drawRevolution(double scale)
                 // calculate normal for p2
                 //
 
-                // (p4 - p2)
-                Vec3f vec_3(vertices[v_idx-3]-vertices[v_idx-9],
-                    vertices[v_idx-2]-vertices[v_idx-8],
-                    vertices[v_idx-1]-vertices[v_idx-7]);
+                // (p4,p2p - p2)
+                Vec3f vec_3(p2p_x-vertices[v_idx-9],
+                            p2p_y-vertices[v_idx-8],
+                            p2p_z-vertices[v_idx-7]);
 
                 //
-                // (p3 - p2)
+                // (p1 - p2)
                 //
-                Vec3f vec_4(vertices[v_idx-6]-vertices[v_idx-9],
-                    vertices[v_idx-5]-vertices[v_idx-8],
-                    vertices[v_idx-4]-vertices[v_idx-7]);
+                Vec3f vec_4(vertices[v_idx-12]-vertices[v_idx-9],
+                            vertices[v_idx-11]-vertices[v_idx-8],
+                            vertices[v_idx-10]-vertices[v_idx-7]);
 
                 tempNormal = vec_4 ^ vec_3;
 
@@ -581,17 +610,17 @@ void drawRevolution(double scale)
                 // calculate normal for p3
                 //
 
-                // (p2 - p3)
-                Vec3f vec_5(vertices[v_idx-9]-vertices[v_idx-6],
-                    vertices[v_idx-8]-vertices[v_idx-5],
-                    vertices[v_idx-7]-vertices[v_idx-4]);
+                // (p2,p3p - p3)
+                Vec3f vec_5(p3p_x-vertices[v_idx-6],
+                            p3p_y-vertices[v_idx-5],
+                            p3p_z-vertices[v_idx-4]);
 
                 //
                 // (p4 - p3)
                 //
                 Vec3f vec_6(vertices[v_idx-3]-vertices[v_idx-6],
-                    vertices[v_idx-2]-vertices[v_idx-5],
-                    vertices[v_idx-1]-vertices[v_idx-4]);
+                            vertices[v_idx-2]-vertices[v_idx-5],
+                            vertices[v_idx-1]-vertices[v_idx-4]);
 
                 tempNormal = vec_6 ^ vec_5;
 
@@ -606,15 +635,15 @@ void drawRevolution(double scale)
 
                 // (p3 - p4)
                 Vec3f vec_7(vertices[v_idx-6]-vertices[v_idx-3],
-                    vertices[v_idx-5]-vertices[v_idx-2],
-                    vertices[v_idx-4]-vertices[v_idx-1]);
+                            vertices[v_idx-5]-vertices[v_idx-2],
+                            vertices[v_idx-4]-vertices[v_idx-1]);
 
                 //
-                // (p2 - p4)
+                // (p2,p4p - p4)
                 //
-                Vec3f vec_8(vertices[v_idx-9]-vertices[v_idx-3],
-                    vertices[v_idx-8]-vertices[v_idx-2],
-                    vertices[v_idx-7]-vertices[v_idx-1]);
+                Vec3f vec_8(p4p_x-vertices[v_idx-3],
+                            p4p_y-vertices[v_idx-2],
+                            p4p_z-vertices[v_idx-1]);
 
                 tempNormal = vec_8 ^ vec_7;
 
