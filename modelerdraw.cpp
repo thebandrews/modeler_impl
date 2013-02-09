@@ -461,7 +461,8 @@ void drawRevolution(double scale)
 
         int idx_offset = 0;
 
-        int step_size = 360 / divisions;
+        float step_size = (float)(360.0 / divisions);
+        float rotation = 0.0;
 
         //
         // Rotate around the y-axis in chunks of step_size. For each step compute triangle matrix
@@ -469,9 +470,9 @@ void drawRevolution(double scale)
         //
         // This implementation uses glDrawElements
         //
-        for(int i = 0; i < 360; i += step_size)
+        while(rotation < 360.0)
         {
-            float radian = i * (PI / 180);
+            float radian = rotation * (PI / 180);
 
             for ( int j=1; j<num_pts; ++ j ) {
 
@@ -482,8 +483,8 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(radian)*(size1);
                 vertices[v_idx++] = (float)(revolution_pts[j-1].y * scale + origin_y);
                 vertices[v_idx++] = sin(radian)*(size1);
-                texture_uv[t_idx++] = 1.0;
-                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = radian / (2*PI);  // s
+                texture_uv[t_idx++] = (float)(j -1)/num_pts;  // t
 
 
                 //
@@ -493,22 +494,15 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(radian)*(size2);
                 vertices[v_idx++] = (float)(revolution_pts[j].y * scale + origin_y);
                 vertices[v_idx++] = sin(radian)*(size2);
-                texture_uv[t_idx++] = 1.0;
-                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = radian / (2*PI);  // s
+                texture_uv[t_idx++] = (float)(j)/num_pts;  // t
 
 
                 //
-                // Ensure that surface of revolution does not overlap.
+                // Rotate by step size to get the second two points in our triangle matrix
                 //
-                float temp_radian;
-                if(i + step_size > 360)
-                {
-                    temp_radian = 0;
-                }
-                else
-                {
-                    temp_radian = (i + step_size) * (PI / 180);
-                }
+                float temp_radian = (rotation + step_size) * (PI / 180);
+
 
 
                 //
@@ -517,8 +511,8 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(temp_radian)*(size1);
                 vertices[v_idx++] = vertices[v_idx - 6];
                 vertices[v_idx++] = sin(temp_radian)*(size1);
-                texture_uv[t_idx++] = 1.0;
-                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = ((rotation + step_size) * (PI / 180)) / (2*PI);  // s
+                texture_uv[t_idx++] = (float)(j -1)/num_pts;  // t
 
 
                 //
@@ -527,8 +521,8 @@ void drawRevolution(double scale)
                 vertices[v_idx++] = cos(temp_radian)*(size2);
                 vertices[v_idx++] = vertices[v_idx - 6];
                 vertices[v_idx++] = sin(temp_radian)*(size2);
-                texture_uv[t_idx++] = 1.0;
-                texture_uv[t_idx++] = 1.0;
+                texture_uv[t_idx++] = ((rotation + step_size) * (PI / 180)) / (2*PI);  // s
+                texture_uv[t_idx++] = (float)(j)/num_pts;  // t
 
 
                 ///////////////////////////////////////////////////////////////
@@ -546,13 +540,13 @@ void drawRevolution(double scale)
 
                 // (p2 - p1)
                 Vec3f vec_1(vertices[v_idx-9]-vertices[v_idx-12],
-                            vertices[v_idx-8]-vertices[v_idx-11],
-                            vertices[v_idx-7]-vertices[v_idx-10]);
+                    vertices[v_idx-8]-vertices[v_idx-11],
+                    vertices[v_idx-7]-vertices[v_idx-10]);
 
                 // (p3 - p1)
                 Vec3f vec_2(vertices[v_idx-6]-vertices[v_idx-12],
-                            vertices[v_idx-5]-vertices[v_idx-11],
-                            vertices[v_idx-4]-vertices[v_idx-10]);
+                    vertices[v_idx-5]-vertices[v_idx-11],
+                    vertices[v_idx-4]-vertices[v_idx-10]);
 
                 Vec3f tempNormal = vec_2 ^ vec_1;
 
@@ -567,15 +561,15 @@ void drawRevolution(double scale)
 
                 // (p4 - p2)
                 Vec3f vec_3(vertices[v_idx-3]-vertices[v_idx-9],
-                            vertices[v_idx-2]-vertices[v_idx-8],
-                            vertices[v_idx-1]-vertices[v_idx-7]);
+                    vertices[v_idx-2]-vertices[v_idx-8],
+                    vertices[v_idx-1]-vertices[v_idx-7]);
 
                 //
                 // (p3 - p2)
                 //
                 Vec3f vec_4(vertices[v_idx-6]-vertices[v_idx-9],
-                            vertices[v_idx-5]-vertices[v_idx-8],
-                            vertices[v_idx-4]-vertices[v_idx-7]);
+                    vertices[v_idx-5]-vertices[v_idx-8],
+                    vertices[v_idx-4]-vertices[v_idx-7]);
 
                 tempNormal = vec_4 ^ vec_3;
 
@@ -589,15 +583,15 @@ void drawRevolution(double scale)
 
                 // (p2 - p3)
                 Vec3f vec_5(vertices[v_idx-9]-vertices[v_idx-6],
-                            vertices[v_idx-8]-vertices[v_idx-5],
-                            vertices[v_idx-7]-vertices[v_idx-4]);
+                    vertices[v_idx-8]-vertices[v_idx-5],
+                    vertices[v_idx-7]-vertices[v_idx-4]);
 
                 //
                 // (p4 - p3)
                 //
                 Vec3f vec_6(vertices[v_idx-3]-vertices[v_idx-6],
-                            vertices[v_idx-2]-vertices[v_idx-5],
-                            vertices[v_idx-1]-vertices[v_idx-4]);
+                    vertices[v_idx-2]-vertices[v_idx-5],
+                    vertices[v_idx-1]-vertices[v_idx-4]);
 
                 tempNormal = vec_6 ^ vec_5;
 
@@ -612,15 +606,15 @@ void drawRevolution(double scale)
 
                 // (p3 - p4)
                 Vec3f vec_7(vertices[v_idx-6]-vertices[v_idx-3],
-                            vertices[v_idx-5]-vertices[v_idx-2],
-                            vertices[v_idx-4]-vertices[v_idx-1]);
+                    vertices[v_idx-5]-vertices[v_idx-2],
+                    vertices[v_idx-4]-vertices[v_idx-1]);
 
                 //
                 // (p2 - p4)
                 //
                 Vec3f vec_8(vertices[v_idx-9]-vertices[v_idx-3],
-                            vertices[v_idx-8]-vertices[v_idx-2],
-                            vertices[v_idx-7]-vertices[v_idx-1]);
+                    vertices[v_idx-8]-vertices[v_idx-2],
+                    vertices[v_idx-7]-vertices[v_idx-1]);
 
                 tempNormal = vec_8 ^ vec_7;
 
@@ -648,15 +642,18 @@ void drawRevolution(double scale)
                 // so increment the offset by 4.
                 //
                 idx_offset += 4;
-            }
-        }
+
+            } //for ( int j=1; j<num_pts; ++ j )
+
+            rotation += step_size;
+        } // while(rotation < 360)
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
-        //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
         glNormalPointer(GL_FLOAT,0,normals);
-        //glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
+        glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
         glDrawElements(GL_TRIANGLES, i_idx, GL_UNSIGNED_INT, indices);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
