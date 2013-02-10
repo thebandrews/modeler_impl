@@ -10,6 +10,7 @@
 #include "modelerview.h"
 #include "modelerdraw.h"
 #include "modelerui.h"
+#include "MyModel.h"
 #include "vault.h"
 #include "FL/glut.h"
 #include "model.h"
@@ -47,6 +48,8 @@ protected:
     PointLight pointLight;
     DirectionalLight directionalLight;
 
+    // My Model
+    MyModel _myModel;
 
 public:
 
@@ -70,7 +73,7 @@ public:
         // Now, call the constructors for each Property:
         , useTexture("Use Checkered Texture", false),
         showReferenceUnitSphere("Show Reference Unit Sphere", false),
-        shapeChoice("Model Shape:", "Sphere|Cube|Cylinder|Torus|Icosahedron|Teapot|Revolution", 0),
+        shapeChoice("Model Shape:", "Sphere|Cube|Cylinder|Torus|Icosahedron|Teapot|Revolution|My Model", 0),
         useShader("Use My Shader", true),
         rotateX("Rotate X", -180, 180, 0, 1),
         rotateY("Rotate Y", -180, 180, 0, 1),
@@ -169,6 +172,9 @@ public:
             break;
         case 6:
             drawRevolution(1);
+            break;
+        case 7:
+            _myModel.draw();
             break;
         }
 

@@ -411,6 +411,18 @@ void init_load_curve_file() {
     }
 }
 
+void drawRevolution(std::string curve_file, int scale)
+{
+    std::string fileName = "curves/" + curve_file;
+    int load_ret = load_2dcurve_txt( fileName.c_str(), &revolution_pts );
+    if ( load_ret < 0 ) {
+        printf( "Cannot open curve file.\n" );
+        return;
+    }
+
+    drawRevolution(scale);
+}
+
 void drawRevolution(double scale)
 {
     if ( revolution_pts.empty() ) {

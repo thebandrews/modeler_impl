@@ -142,6 +142,7 @@
     <ClCompile Include="modelerdraw.cpp" />
     <ClCompile Include="modelerui.cpp" />
     <ClCompile Include="modelerview.cpp" />
+    <ClCompile Include="MyModel.cpp" />
     <ClCompile Include="rijndael.cpp" />
     <ClCompile Include="shaders.cpp" />
     <ClCompile Include="glew\src\glew.c" />
@@ -176,6 +177,7 @@
     <ClInclude Include="modelerdraw.h" />
     <ClInclude Include="modelerui.h" />
     <ClInclude Include="modelerview.h" />
+    <ClInclude Include="MyModel.h" />
     <ClInclude Include="rijndael.h" />
     <ClInclude Include="trackball.h" />
     <ClInclude Include="model.h" />
