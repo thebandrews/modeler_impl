@@ -47,26 +47,26 @@ protected:
     // Right Hand
     RangeProperty RHandRotateX, RHandRotateZ;
 
-    //// Waist
-    //RangeProperty WaistRotateX, WaistRotateY;
+    // Waist
+    RangeProperty WaistRotateX, WaistRotateY, WaistRotateZ;
 
-    //// Left Hip
-    //RangeProperty LHipRotateX, LHipRotateZ;
+    // Left Hip
+    RangeProperty LHipRotateX, LHipRotateZ;
 
-    //// Right Hip
-    //RangeProperty RHipRotateX, RHipRotateZ;
+    // Right Hip
+    RangeProperty RHipRotateX, RHipRotateZ;
 
-    //// Left Knee
-    //RangeProperty LKneeRotateX, LKneeRotateZ;
+    // Left Knee
+    RangeProperty LKneeRotateX, LKneeRotateZ;
 
-    //// Right Knee
-    //RangeProperty RKneeRotateX, RKneeRotateZ;
+    // Right Knee
+    RangeProperty RKneeRotateX, RKneeRotateZ;
 
-    //// Left Foot
-    //RangeProperty LFootRotateX, LFootRotateZ;
+    // Left Foot
+    RangeProperty LFootRotateX, LFootRotateZ;
 
-    //// Right Foot
-    //RangeProperty RFootRotateX, RFootRotateZ;
+    // Right Foot
+    RangeProperty RFootRotateX, RFootRotateZ;
 
 
 
@@ -104,7 +104,29 @@ public:
         LHandRotateZ("Rotate LHand Z", -180, 180, 0, 1),
 
         RHandRotateX("Rotate RHand X", -180, 180, 0, 1),
-        RHandRotateZ("Rotate RHand Z", -180, 180, 0, 1)
+        RHandRotateZ("Rotate RHand Z", -180, 180, 0, 1),
+
+        WaistRotateX("Rotate Waist X", -180, 180, 0, 1),
+        WaistRotateY("Rotate Waist Y", -180, 180, 0, 1),
+        WaistRotateZ("Rotate Waist Z", -180, 180, 0, 1),
+
+        LHipRotateX("Rotate LHip X", -180, 180, 0, 1),
+        LHipRotateZ("Rotate LHip Z", -180, 180, 0, 1),
+
+        RHipRotateX("Rotate RHip X", -180, 180, 0, 1),
+        RHipRotateZ("Rotate RHip Z", -180, 180, 0, 1),
+
+        LKneeRotateX("Rotate LKnee X", -180, 180, 0, 1),
+        LKneeRotateZ("Rotate LKnee Z", -180, 180, 0, 1),
+
+        RKneeRotateX("Rotate RKnee X", -180, 180, 0, 1),
+        RKneeRotateZ("Rotate RKnee Z", -180, 180, 0, 1),
+
+        LFootRotateX("Rotate LFoot X", -180, 180, 0, 1),
+        LFootRotateZ("Rotate LFoot Z", -180, 180, 0, 1),
+
+        RFootRotateX("Rotate RFoot X", -180, 180, 0, 1),
+        RFootRotateZ("Rotate RFoot Z", -180, 180, 0, 1)
 
     {
         // If you have child Models, like the MobileLight model from model.h,
@@ -127,7 +149,22 @@ public:
                   .add(&LHandRotateX)
                   .add(&LHandRotateZ)
                   .add(&RHandRotateX)
-                  .add(&RHandRotateZ);
+                  .add(&RHandRotateZ)
+                  .add(&WaistRotateX)
+                  .add(&WaistRotateY)
+                  .add(&WaistRotateZ)
+                  .add(&LHipRotateX)
+                  .add(&LHipRotateZ)
+                  .add(&RHipRotateX)
+                  .add(&RHipRotateZ)
+                  .add(&LKneeRotateX)
+                  .add(&LKneeRotateZ)
+                  .add(&RKneeRotateX)
+                  .add(&RKneeRotateZ)
+                  .add(&LFootRotateX)
+                  .add(&LFootRotateZ)
+                  .add(&RFootRotateX)
+                  .add(&RFootRotateZ);
 
     }
 

@@ -53,18 +53,15 @@ void MyModel::drawModel() {
     // Rotate around the Y-axis
     glRotatef(rotateY.getValue(), 0, 1, 0);
 
-    // Waist
-    glTranslatef(0.0,3.0,0.0);
-    drawSphere(0.5);
-
     // Lower Torso
-    glPushMatrix();
-    glTranslatef(0.0,-1.95,0.0);
+    glTranslatef(0.0,0.8,0.0);
     drawRevolution("LowerTorso.apts",1);
 
     // Upper Left Leg Joint
     glPushMatrix();
     glTranslatef(-0.3,0.82,0);
+    glRotatef(LHipRotateX.getValue(), 1, 0, 0);
+    glRotatef(LHipRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.2);
 
     // Upper Left Leg
@@ -75,6 +72,8 @@ void MyModel::drawModel() {
     // Lower Left Leg Joint
     glPushMatrix();
     glTranslatef(0,0.925,0);
+    glRotatef(LKneeRotateX.getValue(), 1, 0, 0);
+    glRotatef(LKneeRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.17);
 
     // Lower Left Leg
@@ -86,6 +85,8 @@ void MyModel::drawModel() {
     glPushMatrix();
     glTranslatef(0,0.95,0);
     glRotatef(90, 1, 0, 0);
+    glRotatef(LFootRotateX.getValue(), 1, 0, 0);
+    glRotatef(LFootRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.14);
 
     // Left Foot
@@ -103,6 +104,8 @@ void MyModel::drawModel() {
     // Upper Right Leg Joint
     glPushMatrix();
     glTranslatef(0.3,0.82,0);
+    glRotatef(RHipRotateX.getValue(), 1, 0, 0);
+    glRotatef(RHipRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.2);
 
     // Upper Right Leg
@@ -113,6 +116,8 @@ void MyModel::drawModel() {
     // Lower Right Leg Joint
     glPushMatrix();
     glTranslatef(0,0.925,0);
+    glRotatef(RKneeRotateX.getValue(), 1, 0, 0);
+    glRotatef(RKneeRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.17);
 
     // Lower Right Leg
@@ -124,6 +129,8 @@ void MyModel::drawModel() {
     glPushMatrix();
     glTranslatef(0,0.95,0);
     glRotatef(90, 1, 0, 0);
+    glRotatef(RFootRotateX.getValue(), 1, 0, 0);
+    glRotatef(RFootRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.14);
 
     // Right Foot
@@ -137,7 +144,15 @@ void MyModel::drawModel() {
     glPopMatrix(); // Lower Right Leg joint
     glPopMatrix(); // Upper Right Leg
     glPopMatrix(); // Upper Right Leg Joint
-    glPopMatrix(); // Lower Torso
+
+
+    // Waist
+    glPushMatrix();
+    glTranslatef(0.0,1.85,0.0);
+    glRotatef(WaistRotateX.getValue(), 1, 0, 0);
+    glRotatef(WaistRotateY.getValue(), 0, 1, 0);
+    glRotatef(WaistRotateZ.getValue(), 0, 0, 1);
+    drawSphere(0.5);
 
     // Upper Torso
     glPushMatrix();
@@ -185,7 +200,8 @@ void MyModel::drawModel() {
     // Left Hand Joint
     glPushMatrix();
     glTranslatef(0,2.1,0);
-    glRotatef(45, 0, 0, 1);
+    glRotatef(LHandRotateX.getValue(), 1, 0, 0);
+    glRotatef(LHandRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.15);
 
     // Left Hand
@@ -227,7 +243,8 @@ void MyModel::drawModel() {
     // Right Hand Joint
     glPushMatrix();
     glTranslatef(0,2.1,0);
-    glRotatef(45, 0, 0, 1);
+    glRotatef(RHandRotateX.getValue(), 1, 0, 0);
+    glRotatef(RHandRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.15);
 
     // Right Hand
@@ -243,6 +260,7 @@ void MyModel::drawModel() {
     glPopMatrix(); // Upper Right Arm Joint
 
     glPopMatrix(); // Upper Torso
+    glPopMatrix(); // Waist
 
     // Go back to "world space"
     glPopMatrix();
