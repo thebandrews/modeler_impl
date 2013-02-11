@@ -17,6 +17,10 @@ protected:
     ///////////////////////////////// TEXTURES ////////////////////////////////////
     Texture2D texture;
 
+    Texture2D grass;
+
+    Texture2D sky;
+
     ///////////////////////////////// SHADERS /////////////////////////////////////
     //ShaderProgram shader;
 
@@ -81,6 +85,8 @@ public:
         // Construct textures and shaders. 
         // They won't be loaded until the model is drawn for the first time.
         texture("Wood4.png"),
+        grass("Grass2.png"),
+        sky("Sky2.png"),
 
         rotateX("Rotate X", -180, 180, 0, 1),
         rotateY("Rotate Y", -180, 180, 0, 1),

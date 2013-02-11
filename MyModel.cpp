@@ -17,6 +17,8 @@
 */
 void MyModel::load() {
     texture.load();
+    grass.load();
+    sky.load();
 }
 
 /**
@@ -265,7 +267,7 @@ void MyModel::drawModel() {
     // Go back to "world space"
     glPopMatrix();
 
-    
+
 
 }
 
@@ -278,12 +280,50 @@ void MyModel::draw() {
     // Call a class method that draws our model.
     drawModel();
 
-    // Stop applying shaders to objects.
     // This if-statement makes sure that glUseProgram is not a null
     // function pointer (which it will be if GLEW couldn't initialize).
     if (glUseProgram) {
         glUseProgram(0);
     }
+
+    // Stop applying textures to objects
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+
+    //
+    // Draw sky
+    //
+    sky.use();
+    glPushMatrix();
+    glRotatef(90, 0, 1, 0);
+    drawSphere(200);
+    glPopMatrix();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    //
+    // Draw the floor
+    //
+    grass.use();
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1); // specify the texture coordinate
+    glNormal3f(0, 1, 0); // specify the surface's normal at this vertex
+    glVertex3f(-50, -2, -50); // both before its corresponding vertex
+
+    glTexCoord2f(1, 1);
+    glNormal3f(0, 1, 0);
+    glVertex3f(50, -2, -50);
+
+    glTexCoord2f(1, 0);
+    glNormal3f(0, 1, 0);
+    glVertex3f(50, -2, 50);
+
+    glTexCoord2f(0, 0);
+    glNormal3f(0, 1, 0);
+    glVertex3f(-50, -2, 50);
+    glEnd();
 
     // Stop applying textures to objects
     glBindTexture(GL_TEXTURE_2D, 0);

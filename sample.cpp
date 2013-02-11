@@ -83,8 +83,8 @@ public:
         // you can add their property groups, and they will appear in the list
         // in the top left corner of Modeler, under this model's entry:
         properties.add(pointLight.getProperties())
-                  .add(directionalLight.getProperties())
-                  .add(_myModel.getProperties());
+            .add(directionalLight.getProperties())
+            .add(_myModel.getProperties());
 
         // Finally, add all the properties to this model's PropertyGroup.
         properties.add(&useTexture)
@@ -195,24 +195,27 @@ public:
         // Go back to "world space"
         glPopMatrix();
 
-        // Draw the floor.  Here's a basic example of texture mapping.
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 1); // specify the texture coordinate
-        glNormal3f(0, 1, 0); // specify the surface's normal at this vertex
-        glVertex3f(-10, -2, -10); // both before its corresponding vertex
+        // Draw the floor If not drawing MyModel.  Here's a basic example of texture mapping.
+        if(shapeChoice.getValue() != 7)
+        {
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 1); // specify the texture coordinate
+            glNormal3f(0, 1, 0); // specify the surface's normal at this vertex
+            glVertex3f(-10, -2, -10); // both before its corresponding vertex
 
-        glTexCoord2f(1, 1);
-        glNormal3f(0, 1, 0);
-        glVertex3f(10, -2, -10);
+            glTexCoord2f(1, 1);
+            glNormal3f(0, 1, 0);
+            glVertex3f(10, -2, -10);
 
-        glTexCoord2f(1, 0);
-        glNormal3f(0, 1, 0);
-        glVertex3f(10, -2, 10);
+            glTexCoord2f(1, 0);
+            glNormal3f(0, 1, 0);
+            glVertex3f(10, -2, 10);
 
-        glTexCoord2f(0, 0);
-        glNormal3f(0, 1, 0);
-        glVertex3f(-10, -2, 10);
-        glEnd();
+            glTexCoord2f(0, 0);
+            glNormal3f(0, 1, 0);
+            glVertex3f(-10, -2, 10);
+            glEnd();
+        }
     }
 
     /** Draw the scene. */
