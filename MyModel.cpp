@@ -2,16 +2,10 @@
 // very similar to this for when you make your model in
 // order to plug in to the animator project.
 
-#pragma warning (disable : 4305)
-#pragma warning (disable : 4244)
-#pragma warning (disable : 4786)
-#pragma warning (disable : 4312)
 
 #include "MyModel.h"
 
-
-
-
+#pragma warning (disable : 4305)
 
 /**
 * Modeler calls this method once an OpenGL context becomes available,
@@ -23,7 +17,6 @@
 */
 void MyModel::load() {
     texture.load();
-    shader.load();
 }
 
 /**
@@ -61,6 +54,7 @@ void MyModel::drawModel() {
     glRotatef(rotateY.getValue(), 0, 1, 0);
 
     // Waist
+    glTranslatef(0.0,3.0,0.0);
     drawSphere(0.5);
 
     // Lower Torso
@@ -70,16 +64,79 @@ void MyModel::drawModel() {
 
     // Upper Left Leg Joint
     glPushMatrix();
-    glTranslatef(-0.3,0.85,0);
-    drawSphere(0.22);
+    glTranslatef(-0.3,0.82,0);
+    drawSphere(0.2);
+
+    // Upper Left Leg
+    glPushMatrix();
+    glTranslatef(0.0,-2.6,0);
+    drawRevolution("UpperLeg.apts",1);
+
+    // Lower Left Leg Joint
+    glPushMatrix();
+    glTranslatef(0,0.925,0);
+    drawSphere(0.17);
+
+    // Lower Left Leg
+    glPushMatrix();
+    glTranslatef(0.0,-2.65,0);
+    drawRevolution("LowerLeg.apts",1);
+
+    // Left Foot Joint
+    glPushMatrix();
+    glTranslatef(0,0.95,0);
+    glRotatef(90, 1, 0, 0);
+    drawSphere(0.14);
+
+    // Left Foot
+    glPushMatrix();
+    glTranslatef(0.0,-1.0, 0.0);
+    drawRevolution("Foot.apts",1);
+    glPopMatrix(); // Left Foot
+
+    glPopMatrix(); // Left Foot Joint
+    glPopMatrix(); // Lower Left Leg
+    glPopMatrix(); // Lower Left Leg joint
+    glPopMatrix(); // Upper Left Leg
     glPopMatrix(); // Upper Left Leg Joint
 
     // Upper Right Leg Joint
     glPushMatrix();
-    glTranslatef(0.3,0.85,0);
-    drawSphere(0.22);
-    glPopMatrix(); // Upper Right Leg Joint
+    glTranslatef(0.3,0.82,0);
+    drawSphere(0.2);
 
+    // Upper Right Leg
+    glPushMatrix();
+    glTranslatef(0.0,-2.6,0);
+    drawRevolution("UpperLeg.apts",1);
+
+    // Lower Right Leg Joint
+    glPushMatrix();
+    glTranslatef(0,0.925,0);
+    drawSphere(0.17);
+
+    // Lower Right Leg
+    glPushMatrix();
+    glTranslatef(0.0,-2.65,0);
+    drawRevolution("LowerLeg.apts",1);
+
+    // Right Foot Joint
+    glPushMatrix();
+    glTranslatef(0,0.95,0);
+    glRotatef(90, 1, 0, 0);
+    drawSphere(0.14);
+
+    // Right Foot
+    glPushMatrix();
+    glTranslatef(0.0,-1.0, 0.0);
+    drawRevolution("Foot.apts",1);
+    glPopMatrix(); // Right Foot
+
+    glPopMatrix(); // Right Foot Joint
+    glPopMatrix(); // Lower Right Leg
+    glPopMatrix(); // Lower Right Leg joint
+    glPopMatrix(); // Upper Right Leg
+    glPopMatrix(); // Upper Right Leg Joint
     glPopMatrix(); // Lower Torso
 
     // Upper Torso
@@ -90,6 +147,8 @@ void MyModel::drawModel() {
     // Neck
     glPushMatrix();
     glTranslatef(0,3.4,0);
+    glRotatef(NeckRotateX.getValue(), 1, 0, 0);
+    glRotatef(NeckRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.25);
 
     // Head
@@ -102,6 +161,8 @@ void MyModel::drawModel() {
     // Upper Left Arm Joint
     glPushMatrix();
     glTranslatef(-0.92,2.9,0);
+    glRotatef(LShoulderRotateX.getValue(), 1, 0, 0);
+    glRotatef(LShoulderRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.2);
 
     // Upper Left Arm
@@ -112,14 +173,29 @@ void MyModel::drawModel() {
     // Lower Left Arm Joint
     glPushMatrix();
     glTranslatef(0,1.9,0);
+    glRotatef(LElbowRotateX.getValue(), 1, 0, 0);
+    glRotatef(LElbowRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.15);
 
     // Lower Left Arm
     glPushMatrix();
-    glTranslatef(0,-3.3,0);
+    glTranslatef(0.0,-3.3,0.0);
     drawRevolution("LowerArm.apts",1);
-    glPopMatrix(); // Lower Left Arm
 
+    // Left Hand Joint
+    glPushMatrix();
+    glTranslatef(0,2.1,0);
+    glRotatef(45, 0, 0, 1);
+    drawSphere(0.15);
+
+    // Left Hand
+    glPushMatrix();
+    glTranslatef(0,-1.5,0);
+    drawRevolution("Hand.apts",1);
+    glPopMatrix(); // Left Hand
+
+    glPopMatrix(); // Left Hand Joint
+    glPopMatrix(); // Lower Left Arm
     glPopMatrix(); // Lower Left Arm Joint
     glPopMatrix(); // Upper Left Arm
     glPopMatrix(); // Upper Left Arm Joint
@@ -127,6 +203,8 @@ void MyModel::drawModel() {
     // Upper Right Arm Joint
     glPushMatrix();
     glTranslatef(0.92,2.9,0);
+    glRotatef(RShoulderRotateX.getValue(), 1, 0, 0);
+    glRotatef(RShoulderRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.2);
 
     // Upper Right Arm
@@ -137,14 +215,29 @@ void MyModel::drawModel() {
     // Lower Right Arm Joint
     glPushMatrix();
     glTranslatef(0,1.9,0);
+    glRotatef(RElbowRotateX.getValue(), 1, 0, 0);
+    glRotatef(RElbowRotateZ.getValue(), 0, 0, 1);
     drawSphere(0.15);
 
     // Lower Right Arm
     glPushMatrix();
     glTranslatef(0,-3.3,0);
     drawRevolution("LowerArm.apts",1);
-    glPopMatrix(); // Lower Right Arm
 
+    // Right Hand Joint
+    glPushMatrix();
+    glTranslatef(0,2.1,0);
+    glRotatef(45, 0, 0, 1);
+    drawSphere(0.15);
+
+    // Right Hand
+    glPushMatrix();
+    glTranslatef(0,-1.5,0);
+    drawRevolution("Hand.apts",1);
+    glPopMatrix(); // Right Hand
+
+    glPopMatrix(); // Right Hand Joint
+    glPopMatrix(); // Lower Right Arm
     glPopMatrix(); // Lower Right Arm Joint
     glPopMatrix(); // Upper Right Arm
     glPopMatrix(); // Upper Right Arm Joint
@@ -162,19 +255,11 @@ void MyModel::drawModel() {
 void MyModel::draw() {
 
     // Use the texture if desired.
-    //if (useTexture.getValue()) {
-        texture.use();
-    /*} else {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }*/
-
-    // Use the shader if desired.
-    if (useShader.getValue()) {
-        shader.use();
-    }
+    texture.use();
 
     // Call a class method that draws our model.
     drawModel();
+
     // Stop applying shaders to objects.
     // This if-statement makes sure that glUseProgram is not a null
     // function pointer (which it will be if GLEW couldn't initialize).
@@ -186,10 +271,3 @@ void MyModel::draw() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-//
-// Draw Upper torso
-//
-void MyModel::UpperTorso()
-{
-
-}

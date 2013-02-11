@@ -74,7 +74,7 @@ public:
         , useTexture("Use Checkered Texture", false),
         showReferenceUnitSphere("Show Reference Unit Sphere", false),
         shapeChoice("Model Shape:", "Sphere|Cube|Cylinder|Torus|Icosahedron|Teapot|Revolution|My Model", 0),
-        useShader("Use My Shader", true),
+        useShader("Use My Shader", false),
         rotateX("Rotate X", -180, 180, 0, 1),
         rotateY("Rotate Y", -180, 180, 0, 1),
         diffuse("Diffuse Color", 1.0, 0.7, .4)
@@ -83,7 +83,8 @@ public:
         // you can add their property groups, and they will appear in the list
         // in the top left corner of Modeler, under this model's entry:
         properties.add(pointLight.getProperties())
-            .add(directionalLight.getProperties());
+                  .add(directionalLight.getProperties())
+                  .add(_myModel.getProperties());
 
         // Finally, add all the properties to this model's PropertyGroup.
         properties.add(&useTexture)
@@ -107,6 +108,7 @@ public:
     void load() {
         texture.load();
         shader.load();
+        _myModel.load();
     }
 
     /**

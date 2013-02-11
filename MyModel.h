@@ -1,10 +1,8 @@
 #ifndef __MY_MODEL_HEADER__
 #define __MY_MODEL_HEADER__
 
-//#pragma warning (disable : 4305)
-//#pragma warning (disable : 4244)
-//#pragma warning (disable : 4786)
-//#pragma warning (disable : 4312)
+#pragma warning (disable : 4305)
+
 
 #include "modelerview.h"
 #include "modelerdraw.h"
@@ -20,29 +18,56 @@ protected:
     Texture2D texture;
 
     ///////////////////////////////// SHADERS /////////////////////////////////////
-    ShaderProgram shader;
+    //ShaderProgram shader;
 
     //////////////////////////////// PROPERTIES ///////////////////////////////////
     // Switches for spheres
-    BooleanProperty useTexture;
-    //  for showing/hiding reference unit sphere
-    //BooleanProperty showReferenceUnitSphere;
-
-    // Lets you pick what shapes to use for the default model!
-    //ChoiceProperty shapeChoice;
-
-    BooleanProperty useShader;
 
     // Some slider properties
     RangeProperty rotateX, rotateY;
 
-    // Diffuse color picker
-    RGBProperty diffuse;
+    // Neck
+    RangeProperty NeckRotateX, NeckRotateZ;
 
+    // Left Shoulder
+    RangeProperty LShoulderRotateX, LShoulderRotateZ;
 
-    // Scene lights
-    //PointLight pointLight;
-    //DirectionalLight directionalLight;
+    // Right Shoulder
+    RangeProperty RShoulderRotateX, RShoulderRotateZ;
+
+    // Left Elbow
+    RangeProperty LElbowRotateX, LElbowRotateZ;
+
+    // Right Elbow
+    RangeProperty RElbowRotateX, RElbowRotateZ;
+
+    // Left Hand
+    RangeProperty LHandRotateX, LHandRotateZ;
+
+    // Right Hand
+    RangeProperty RHandRotateX, RHandRotateZ;
+
+    //// Waist
+    //RangeProperty WaistRotateX, WaistRotateY;
+
+    //// Left Hip
+    //RangeProperty LHipRotateX, LHipRotateZ;
+
+    //// Right Hip
+    //RangeProperty RHipRotateX, RHipRotateZ;
+
+    //// Left Knee
+    //RangeProperty LKneeRotateX, LKneeRotateZ;
+
+    //// Right Knee
+    //RangeProperty RKneeRotateX, RKneeRotateZ;
+
+    //// Left Foot
+    //RangeProperty LFootRotateX, LFootRotateZ;
+
+    //// Right Foot
+    //RangeProperty RFootRotateX, RFootRotateZ;
+
 
 
 public:
@@ -55,37 +80,54 @@ public:
 
         // Construct textures and shaders. 
         // They won't be loaded until the model is drawn for the first time.
-        texture("checkers.png"),
-        shader("shader.vert", "shader.frag", NULL),
+        texture("Wood4.png"),
 
-        // Call the constructors for the lights
-        //pointLight("Point Light", GL_LIGHT1, /**direction part**/ -5, 5, 5, /**diffuse part**/ 1.0, 0.5, 0.5, 
-        ///**specular part**/ 1.0, 0.5, 0.5, /**ambient part**/ .2f, 0.1, 0.1 /**attenuation part**/, 0.4, 0.7, 0),
-        //directionalLight("Directional Light", GL_LIGHT0, /**direction part**/ 5, 5, 5, /**diffuse part**/ 0.0f, 0.5, 0.5f, 
-        ///**specular part**/ 0.0f, 0.5f, 0.5f ),
-
-        // Now, call the constructors for each Property:
-        useTexture("Use Checkered Texture", true),
-        //showReferenceUnitSphere("Show Reference Unit Sphere", false),
-        //shapeChoice("Model Shape:", "Sphere|Cube|Cylinder|Torus|Icosahedron|Teapot|Revolution|My Model", 0),
-        useShader("Use My Shader", false),
         rotateX("Rotate X", -180, 180, 0, 1),
         rotateY("Rotate Y", -180, 180, 0, 1),
-        diffuse("Diffuse Color", 1.0, 0.7, .4)
+
+        NeckRotateX("Rotate Neck X", -180, 180, 0, 1),
+        NeckRotateZ("Rotate Neck Z", -180, 180, 0, 1),
+
+        LShoulderRotateX("Rotate LShoulder X", -180, 180, 0, 1),
+        LShoulderRotateZ("Rotate LShoulder Z", -180, 180, 0, 1),
+
+        RShoulderRotateX("Rotate RShoulder X", -180, 180, 0, 1),
+        RShoulderRotateZ("Rotate RShoulder Z", -180, 180, 0, 1),
+
+        LElbowRotateX("Rotate LElbow X", -180, 180, 0, 1),
+        LElbowRotateZ("Rotate LElbow Z", -180, 180, 0, 1),
+
+        RElbowRotateX("Rotate RElbow X", -180, 180, 0, 1),
+        RElbowRotateZ("Rotate RElbow Z", -180, 180, 0, 1),
+
+        LHandRotateX("Rotate LHand X", -180, 180, 0, 1),
+        LHandRotateZ("Rotate LHand Z", -180, 180, 0, 1),
+
+        RHandRotateX("Rotate RHand X", -180, 180, 0, 1),
+        RHandRotateZ("Rotate RHand Z", -180, 180, 0, 1)
+
     {
         // If you have child Models, like the MobileLight model from model.h,
         // you can add their property groups, and they will appear in the list
         // in the top left corner of Modeler, under this model's entry:
-        //properties.add(pointLight.getProperties())
-        //    .add(directionalLight.getProperties());
 
         // Finally, add all the properties to this model's PropertyGroup.
-        properties.add(&useTexture)
-            .add(&useShader)
-            .add(&rotateX)
-            .add(&rotateY)
-            .add(&diffuse)
-            ;
+        properties.add(&rotateX)
+                  .add(&rotateY)
+                  .add(&NeckRotateX)
+                  .add(&NeckRotateZ)
+                  .add(&LShoulderRotateX)
+                  .add(&LShoulderRotateZ)
+                  .add(&RShoulderRotateX)
+                  .add(&RShoulderRotateZ)
+                  .add(&LElbowRotateX)
+                  .add(&LElbowRotateZ)
+                  .add(&RElbowRotateX)
+                  .add(&RElbowRotateZ)
+                  .add(&LHandRotateX)
+                  .add(&LHandRotateZ)
+                  .add(&RHandRotateX)
+                  .add(&RHandRotateZ);
 
     }
 
@@ -96,22 +138,6 @@ public:
     void tick();
     void drawModel();
     void draw();
-
-    //
-    // Draw the various body parts
-    //
-    void UpperTorso();
-    void LowerTorso();
-    void Head();
-    void UpperLeftArm();
-    void UpperRightArm();
-    void UpperLeftLeg();
-    void UpperRightLeg();
-    void LowerLeftArm();
-    void LowerRightArm();
-
-
-
 };
 
 #endif
