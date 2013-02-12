@@ -4,8 +4,8 @@
 // These variables will be computed per vertex but will vary across
 // each triangle, to be used by the fragment shader for lighting
 // calculations.
-varying vec3 N;
-varying vec3 v;
+varying vec3 normal;
+varying vec3 vVertex;
 
 void main()
 {
@@ -15,10 +15,10 @@ void main()
 	// viewing direction.  We will pass along the transformed
 	// vertex location to be interpolated across the triangle and
 	// then used to compute viewing and lighting directions.
-	v = vec3(gl_ModelViewMatrix * gl_Vertex);
+	vVertex = vec3(gl_ModelViewMatrix * gl_Vertex);
 
 	// Need to transform the normal into eye space.
-	N = normalize(gl_NormalMatrix * gl_Normal);
+	normal = normalize(gl_NormalMatrix * gl_Normal);
 
 	// Always have to transform vertex positions so they end
 	// up in the right place on the screen.
