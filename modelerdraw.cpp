@@ -483,13 +483,12 @@ void drawRevolution(double scale)
         //
         // This implementation uses glDrawElements
         //
-        while(rotation <= step_size*3)
+        while(rotation < 360)
         {
             float radian = rotation * (PI / 180);
             float radian_p = (float)(rotation + step_size)* (PI / 180);
 
             for ( int j=0; j<num_pts; ++ j ) {
-
 
                 //
                 // Compute Pt #1
@@ -502,68 +501,12 @@ void drawRevolution(double scale)
                 //texture_uv[t_idx++] = (float)(j)/num_pts;  // t
 
 
-
-
-
                 if(j<num_pts-1)
                 {
-
-                    /////////////////////////////////////////////////////////////
-                    //// Normal Calculations
-                    /////////////////////////////////////////////////////////////
-
-                    ////
-                    //// Compute Pt #2
-                    ////
-                    //float size2 = (float)(revolution_pts[j+1].x * scale);
-                    //float p2_x = cos(radian)*(size2);
-                    //float p2_y = (float)(revolution_pts[j+1].y * scale + origin_y);
-                    //float p2_z = sin(radian)*(size2);
-
-                    ////
-                    //// Compute Pt #1 prime - for normal calculations
-                    ////
-                    //float p1p_x = cos(radian_p)*(size1);
-                    //float p1p_y = vertices[v_idx-2];
-                    //float p1p_z = sin(radian_p)*(size1);
-
-                    //printf("p1: (x,y,z): %f,%f,%f\n", vertices[v_idx-3], vertices[v_idx-2], vertices[v_idx-1]);
-                    //printf("p2: (x,y,z): %f,%f,%f\n", p2_x, p2_y, p2_z);
-                    //printf("p1p: (x,y,z): %f,%f,%f\n", p1p_x, p1p_y, p1p_z);
-                    ////
-                    //// Calculate normal for p1
-                    ////
-
-                    //// (p2 - p1)
-                    //Vec3f vec_1(p2_x - vertices[v_idx-3],
-                    //            p2_y - vertices[v_idx-2],
-                    //            p2_z - vertices[v_idx-1]);
-
-                    //// (p1p - p1)
-                    //Vec3f vec_2(p1p_x - vertices[v_idx-3],
-                    //            p1p_y - vertices[v_idx-2],
-                    //            p1p_z - vertices[v_idx-1]);
-
-                    //Vec3f tempNormal;
-                    //if(idx_offset % 2){
-                    //    tempNormal = vec_2 ^ vec_1;
-                    //}
-                    //else {
-                    //    tempNormal = vec_2 ^ vec_1;
-                    //}
-
-                    //normals[n_idx++] = tempNormal[0];
-                    //normals[n_idx++] = tempNormal[1];
-                    //normals[n_idx++] = tempNormal[2];
-
-                    //printf("normals [%d]: (x,y,z): %f,%f,%f\n", idx_offset, tempNormal[0], tempNormal[1], tempNormal[2]);
-
-                    ///////////////////////////////////////////////////////////
-
                     //
                     // Setup indices matrix
                     //
-                    if(rotation + step_size <= step_size*3)
+                    if(rotation + step_size < 360)
                     {
                         if(j < (num_pts - 2))
                         {
@@ -575,9 +518,8 @@ void drawRevolution(double scale)
                         if( j > 0)
                         {
                             indices[i_idx++] = 0 + idx_offset;
-                            
-                            indices[i_idx++] = 0 + idx_offset + num_pts;
                             indices[i_idx++] = 1 + idx_offset + num_pts;
+                            indices[i_idx++] = 0 + idx_offset + num_pts;
                         }
                     }
 
@@ -585,19 +527,16 @@ void drawRevolution(double scale)
 
                 idx_offset++;
 
-            } //for ( int j=1; j<num_pts; ++ j )
-
+            } //for ( int j=0; j<num_pts; j++ )
 
             rotation += step_size;
         } // while(rotation < 360)
 
 
-        //glBegin(GL_POINTS);
-        for (int vert_idx = 0; vert_idx * 3 < v_idx; vert_idx++)
-        {
-            printf("vertices [%d]: (x,y,z): %f,%f,%f\n", vert_idx, vertices[vert_idx*3], vertices[vert_idx*3+1], vertices[vert_idx*3+2]);
-            //glVertex3f(vertices[vert_idx*3], vertices[vert_idx*3+1], vertices[vert_idx*3+2]);
-        }
+        //for (int vert_idx = 0; vert_idx * 3 < v_idx; vert_idx++)
+        //{
+        //    printf("vertices [%d]: (x,y,z): %f,%f,%f\n", vert_idx, vertices[vert_idx*3], vertices[vert_idx*3+1], vertices[vert_idx*3+2]);
+        //}
 
 
         /////////////////////////////////////////////////////////////
@@ -640,9 +579,6 @@ void drawRevolution(double scale)
                     p3_y = vertices[(vert_idx2)*3+num_pts*3+1];
                     p3_z = vertices[(vert_idx2)*3+num_pts*3+2];
 
-                    printf("Normal Indices (1,2,3): %d,%d,%d\n", vert_idx2, (vert_idx2+1), vert_idx2 + num_pts);
-
-
                     // (p2 - p1)
                     Vec3f vec_1(p2_x - p1_x,
                         p2_y - p1_y,
@@ -654,13 +590,7 @@ void drawRevolution(double scale)
                         p3_z - p1_z);
 
                     Vec3f tempNormal = vec_2 ^ vec_1;
-
                     tempNormal.normalize();
-
-                    //Vec3f tempNormal;
-                    //tempNormal[0] = 0;
-                    //tempNormal[1] = 1;
-                    //tempNormal[2] = 0;
 
                     normals[n_idx++] = tempNormal[0];
                     normals[n_idx++] = tempNormal[1];
@@ -694,14 +624,14 @@ void drawRevolution(double scale)
 
 
         glEnableClientState(GL_VERTEX_ARRAY);
-        //glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
         //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
-        //glNormalPointer(GL_FLOAT,0,normals);
+        glNormalPointer(GL_FLOAT,0,normals);
         //glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
         glDrawElements(GL_TRIANGLES, i_idx, GL_UNSIGNED_INT, indices);
         //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        //glDisableClientState(GL_NORMAL_ARRAY);
+        glDisableClientState(GL_NORMAL_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
 
 
