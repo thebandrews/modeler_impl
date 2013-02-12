@@ -461,10 +461,11 @@ void drawRevolution(double scale)
 
         int num_pts = revolution_pts.size();
 
-        float * vertices = new float[12*num_pts*360];
-        float * normals = new float[12*num_pts*360];
+        float * vertices = new float[3*num_pts*360]; //3*num_pts*360
+        float * normals = new float[3*num_pts*360];
+
         int * indices = new int[6*num_pts*360];
-        float * texture_uv = new float[8*num_pts*360];
+        float * texture_uv = new float[2*num_pts*360];
 
         int v_idx = 0;
         int n_idx = 0;
@@ -482,222 +483,225 @@ void drawRevolution(double scale)
         //
         // This implementation uses glDrawElements
         //
-        while(rotation < 360.0)
+        while(rotation <= step_size*3)
         {
             float radian = rotation * (PI / 180);
-            float radian_p = (float)(rotation + 0.0005)* (PI / 180);
+            float radian_p = (float)(rotation + step_size)* (PI / 180);
 
-            for ( int j=1; j<num_pts; ++ j ) {
+            for ( int j=0; j<num_pts; ++ j ) {
+
 
                 //
                 // Compute Pt #1
                 //
-                float size1 = (float)(revolution_pts[j-1].x * scale);
+                float size1 = (float)(revolution_pts[j].x * scale);
                 vertices[v_idx++] = cos(radian)*(size1);
-                vertices[v_idx++] = (float)(revolution_pts[j-1].y * scale + origin_y);
-                vertices[v_idx++] = sin(radian)*(size1);
-                texture_uv[t_idx++] = radian / (2*PI);  // s
-                texture_uv[t_idx++] = (float)(j -1)/num_pts;  // t
-
-                //
-                // Compute Pt #1 prime - for normal calculations
-                //
-                float p1p_x = cos(radian_p)*(size1);
-                float p1p_y = vertices[v_idx-2];
-                float p1p_z = sin(radian_p)*(size1);
-
-
-                //
-                // Compute Pt #2
-                //
-                float size2 = (float)(revolution_pts[j].x * scale);
-                vertices[v_idx++] = cos(radian)*(size2);
                 vertices[v_idx++] = (float)(revolution_pts[j].y * scale + origin_y);
-                vertices[v_idx++] = sin(radian)*(size2);
-                texture_uv[t_idx++] = radian / (2*PI);  // s
-                texture_uv[t_idx++] = (float)(j)/num_pts;  // t
-
-                //
-                // Compute Pt #2 prime - for normal calculations
-                //
-                float p2p_x = cos(radian_p)*(size2);
-                float p2p_y = vertices[v_idx-2];
-                float p2p_z = sin(radian_p)*(size2);
+                vertices[v_idx++] = sin(radian)*(size1);
+                //texture_uv[t_idx++] = radian / (2*PI);  // s
+                //texture_uv[t_idx++] = (float)(j)/num_pts;  // t
 
 
-                //
-                // Rotate by step size to get the second two points in our triangle matrix
-                //
-                float temp_radian = (rotation + step_size) * (PI / 180);
-                radian_p = (float)((rotation + step_size - 0.0005) * (PI / 180));
 
 
-                //
-                // Compute Pt #3
-                //
-                vertices[v_idx++] = cos(temp_radian)*(size1);
-                vertices[v_idx++] = vertices[v_idx - 6];
-                vertices[v_idx++] = sin(temp_radian)*(size1);
-                texture_uv[t_idx++] = ((rotation + step_size) * (PI / 180)) / (2*PI);  // s
-                texture_uv[t_idx++] = (float)(j -1)/num_pts;  // t
 
-                //
-                // Compute Pt #3 prime - for normal calculations
-                //
-                float p3p_x = cos(radian_p)*(size1);
-                float p3p_y = vertices[v_idx-2];
-                float p3p_z = sin(radian_p)*(size1);
+                if(j<num_pts-1)
+                {
 
+                    /////////////////////////////////////////////////////////////
+                    //// Normal Calculations
+                    /////////////////////////////////////////////////////////////
 
-                //
-                // Compute Pt #4
-                //
-                vertices[v_idx++] = cos(temp_radian)*(size2);
-                vertices[v_idx++] = vertices[v_idx - 6];
-                vertices[v_idx++] = sin(temp_radian)*(size2);
-                texture_uv[t_idx++] = ((rotation + step_size) * (PI / 180)) / (2*PI);  // s
-                texture_uv[t_idx++] = (float)(j)/num_pts;  // t
+                    ////
+                    //// Compute Pt #2
+                    ////
+                    //float size2 = (float)(revolution_pts[j+1].x * scale);
+                    //float p2_x = cos(radian)*(size2);
+                    //float p2_y = (float)(revolution_pts[j+1].y * scale + origin_y);
+                    //float p2_z = sin(radian)*(size2);
 
-                //
-                // Compute Pt #4 prime - for normal calculations
-                //
-                float p4p_x = cos(radian_p)*(size2);
-                float p4p_y = vertices[v_idx-2];
-                float p4p_z = sin(radian_p)*(size2);
+                    ////
+                    //// Compute Pt #1 prime - for normal calculations
+                    ////
+                    //float p1p_x = cos(radian_p)*(size1);
+                    //float p1p_y = vertices[v_idx-2];
+                    //float p1p_z = sin(radian_p)*(size1);
 
+                    //printf("p1: (x,y,z): %f,%f,%f\n", vertices[v_idx-3], vertices[v_idx-2], vertices[v_idx-1]);
+                    //printf("p2: (x,y,z): %f,%f,%f\n", p2_x, p2_y, p2_z);
+                    //printf("p1p: (x,y,z): %f,%f,%f\n", p1p_x, p1p_y, p1p_z);
+                    ////
+                    //// Calculate normal for p1
+                    ////
 
-                ///////////////////////////////////////////////////////////////
-                // 
-                // Compute Normals
-                //
-                // TODO: Points are kinda far apart so normals look a little bit
-                // like normals to the plane instead of normals to the vertex.
-                //
-                ///////////////////////////////////////////////////////////////
+                    //// (p2 - p1)
+                    //Vec3f vec_1(p2_x - vertices[v_idx-3],
+                    //            p2_y - vertices[v_idx-2],
+                    //            p2_z - vertices[v_idx-1]);
 
-                //
-                // Calculate normal for p1
-                //
+                    //// (p1p - p1)
+                    //Vec3f vec_2(p1p_x - vertices[v_idx-3],
+                    //            p1p_y - vertices[v_idx-2],
+                    //            p1p_z - vertices[v_idx-1]);
 
-                // (p2 - p1)
-                Vec3f vec_1(vertices[v_idx-9]-vertices[v_idx-12],
-                    vertices[v_idx-8]-vertices[v_idx-11],
-                    vertices[v_idx-7]-vertices[v_idx-10]);
+                    //Vec3f tempNormal;
+                    //if(idx_offset % 2){
+                    //    tempNormal = vec_2 ^ vec_1;
+                    //}
+                    //else {
+                    //    tempNormal = vec_2 ^ vec_1;
+                    //}
 
-                // (p3,p1p - p1)
-                Vec3f vec_2(p1p_x-vertices[v_idx-12],
-                            p1p_y-vertices[v_idx-11],
-                            p1p_z-vertices[v_idx-10]);
+                    //normals[n_idx++] = tempNormal[0];
+                    //normals[n_idx++] = tempNormal[1];
+                    //normals[n_idx++] = tempNormal[2];
 
-                Vec3f tempNormal = vec_2 ^ vec_1;
+                    //printf("normals [%d]: (x,y,z): %f,%f,%f\n", idx_offset, tempNormal[0], tempNormal[1], tempNormal[2]);
 
+                    ///////////////////////////////////////////////////////////
 
-                normals[n_idx++] = tempNormal[0];
-                normals[n_idx++] = tempNormal[1];
-                normals[n_idx++] = tempNormal[2];
+                    //
+                    // Setup indices matrix
+                    //
+                    if(rotation + step_size <= step_size*3)
+                    {
+                        if(j < (num_pts - 2))
+                        {
+                            indices[i_idx++] = 0 + idx_offset;
+                            indices[i_idx++] = 1 + idx_offset;
+                            indices[i_idx++] = 1 + idx_offset + num_pts;
+                        }
 
-                //
-                // calculate normal for p2
-                //
+                        if( j > 0)
+                        {
+                            indices[i_idx++] = 0 + idx_offset;
+                            
+                            indices[i_idx++] = 0 + idx_offset + num_pts;
+                            indices[i_idx++] = 1 + idx_offset + num_pts;
+                        }
+                    }
 
-                // (p4,p2p - p2)
-                Vec3f vec_3(p2p_x-vertices[v_idx-9],
-                            p2p_y-vertices[v_idx-8],
-                            p2p_z-vertices[v_idx-7]);
+                }
 
-                //
-                // (p1 - p2)
-                //
-                Vec3f vec_4(vertices[v_idx-12]-vertices[v_idx-9],
-                            vertices[v_idx-11]-vertices[v_idx-8],
-                            vertices[v_idx-10]-vertices[v_idx-7]);
-
-                tempNormal = vec_4 ^ vec_3;
-
-                normals[n_idx++] = tempNormal[0];
-                normals[n_idx++] = tempNormal[1];
-                normals[n_idx++] = tempNormal[2];
-
-                //
-                // calculate normal for p3
-                //
-
-                // (p2,p3p - p3)
-                Vec3f vec_5(p3p_x-vertices[v_idx-6],
-                            p3p_y-vertices[v_idx-5],
-                            p3p_z-vertices[v_idx-4]);
-
-                //
-                // (p4 - p3)
-                //
-                Vec3f vec_6(vertices[v_idx-3]-vertices[v_idx-6],
-                            vertices[v_idx-2]-vertices[v_idx-5],
-                            vertices[v_idx-1]-vertices[v_idx-4]);
-
-                tempNormal = vec_6 ^ vec_5;
-
-                normals[n_idx++] = tempNormal[0];
-                normals[n_idx++] = tempNormal[1];
-                normals[n_idx++] = tempNormal[2];
-
-
-                //
-                // calculate normal for p4
-                //
-
-                // (p3 - p4)
-                Vec3f vec_7(vertices[v_idx-6]-vertices[v_idx-3],
-                            vertices[v_idx-5]-vertices[v_idx-2],
-                            vertices[v_idx-4]-vertices[v_idx-1]);
-
-                //
-                // (p2,p4p - p4)
-                //
-                Vec3f vec_8(p4p_x-vertices[v_idx-3],
-                            p4p_y-vertices[v_idx-2],
-                            p4p_z-vertices[v_idx-1]);
-
-                tempNormal = vec_8 ^ vec_7;
-
-
-                normals[n_idx++] = tempNormal[0];
-                normals[n_idx++] = tempNormal[1];
-                normals[n_idx++] = tempNormal[2];
-
-                ///////////////////////////////////////////////////////////////
-
-
-                //
-                // Setup indices matrix
-                //
-                indices[i_idx++] = 0 + idx_offset;
-                indices[i_idx++] = 1 + idx_offset;
-                indices[i_idx++] = 3 + idx_offset;
-
-                indices[i_idx++] = 0 + idx_offset;
-                indices[i_idx++] = 3 + idx_offset;
-                indices[i_idx++] = 2 + idx_offset;
-
-                //
-                // We add 4 points to the vertices array each pass
-                // so increment the offset by 4.
-                //
-                idx_offset += 4;
+                idx_offset++;
 
             } //for ( int j=1; j<num_pts; ++ j )
+
 
             rotation += step_size;
         } // while(rotation < 360)
 
+
+        //glBegin(GL_POINTS);
+        for (int vert_idx = 0; vert_idx * 3 < v_idx; vert_idx++)
+        {
+            printf("vertices [%d]: (x,y,z): %f,%f,%f\n", vert_idx, vertices[vert_idx*3], vertices[vert_idx*3+1], vertices[vert_idx*3+2]);
+            //glVertex3f(vertices[vert_idx*3], vertices[vert_idx*3+1], vertices[vert_idx*3+2]);
+        }
+
+
+        /////////////////////////////////////////////////////////////
+        //// Normal Calculations
+        /////////////////////////////////////////////////////////////
+        for (int vert_idx2 = 0; (vert_idx2+1)*3 < v_idx; vert_idx2++)
+        {
+            float p1_x = vertices[vert_idx2*3];
+            float p1_y = vertices[vert_idx2*3+1];
+            float p1_z = vertices[vert_idx2*3+2];
+
+            float p2_x = vertices[vert_idx2*3+3];
+            float p2_y = vertices[vert_idx2*3+4];
+            float p2_z = vertices[vert_idx2*3+5];
+
+            float p3_x;
+            float p3_y;
+            float p3_z;
+
+            if((vert_idx2*3 + num_pts*3) < v_idx)
+            {
+                //
+                // Handle corner cases
+                //
+                if(vert_idx2 % num_pts == 0)
+                {
+                    normals[n_idx++] = 0;
+                    normals[n_idx++] = 1;
+                    normals[n_idx++] = 0;
+                }
+                else if((vert_idx2+1) % num_pts == 0)
+                {
+                    normals[n_idx++] = 0;
+                    normals[n_idx++] = -1;
+                    normals[n_idx++] = 0;
+                }
+                else
+                {
+                    p3_x = vertices[(vert_idx2)*3+num_pts*3];
+                    p3_y = vertices[(vert_idx2)*3+num_pts*3+1];
+                    p3_z = vertices[(vert_idx2)*3+num_pts*3+2];
+
+                    printf("Normal Indices (1,2,3): %d,%d,%d\n", vert_idx2, (vert_idx2+1), vert_idx2 + num_pts);
+
+
+                    // (p2 - p1)
+                    Vec3f vec_1(p2_x - p1_x,
+                        p2_y - p1_y,
+                        p2_z - p1_z);
+
+                    // (p3 - p1)
+                    Vec3f vec_2(p3_x - p1_x,
+                        p3_y - p1_y,
+                        p3_z - p1_z);
+
+                    Vec3f tempNormal = vec_2 ^ vec_1;
+
+                    tempNormal.normalize();
+
+                    //Vec3f tempNormal;
+                    //tempNormal[0] = 0;
+                    //tempNormal[1] = 1;
+                    //tempNormal[2] = 0;
+
+                    normals[n_idx++] = tempNormal[0];
+                    normals[n_idx++] = tempNormal[1];
+                    normals[n_idx++] = tempNormal[2];
+                }
+            }
+            else
+            {
+                normals[n_idx++] = 0;
+                normals[n_idx++] = 0;
+                normals[n_idx++] = 0;
+            }
+        }
+
+        normals[n_idx++] = 0;
+        normals[n_idx++] = -1;
+        normals[n_idx++] = 0;
+
+        // Debug test: draw normals as little lines
+        glBegin(GL_LINES);
+        for (int vert_idx3 = 0; vert_idx3*3 < v_idx; vert_idx3++)
+        {
+            float length = 0.5;
+            // Draw line from vertex...
+            glVertex3f(vertices[vert_idx3*3], vertices[vert_idx3*3+1], vertices[vert_idx3*3+2]);
+            // In normal location * length
+            glVertex3f(vertices[vert_idx3*3] + normals[vert_idx3*3]*length, vertices[vert_idx3*3+1] + normals[vert_idx3*3+1]*length, vertices[vert_idx3*3+2] + normals[vert_idx3*3+2]*length);
+        }
+        glEnd();
+
+
+
         glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        //glEnableClientState(GL_NORMAL_ARRAY);
+        //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
-        glNormalPointer(GL_FLOAT,0,normals);
-        glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
+        //glNormalPointer(GL_FLOAT,0,normals);
+        //glTexCoordPointer(2,GL_FLOAT,0,texture_uv);
         glDrawElements(GL_TRIANGLES, i_idx, GL_UNSIGNED_INT, indices);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
+        //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        //glDisableClientState(GL_NORMAL_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
 
 
