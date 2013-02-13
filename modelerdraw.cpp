@@ -477,6 +477,9 @@ void drawRevolution(double scale)
         float step_size = (float)(360.0 / divisions);
         float rotation = 0.0;
 
+        ///////////////////////////////////////////////////////////////////////
+        //
+        // Compute Triangle mesh vertices, indices and texture arrays
         //
         // Rotate around the y-axis in chunks of step_size. For each step compute triangle matrix
         // consisting of 4 points. Also, at each vertex compute normals and texture coordinates.
@@ -500,6 +503,9 @@ void drawRevolution(double scale)
                 texture_uv[t_idx++] = (float)(j)/num_pts;  // t
 
 
+                //
+                // Check to make sure we aren't at the end of the points array.
+                //
                 if(j<num_pts-1)
                 {
                     //
@@ -548,6 +554,9 @@ void drawRevolution(double scale)
 
         for (int vert_idx2 = 0; vert_idx2*3 < v_idx; vert_idx2++)
         {
+            //
+            // Compute 3 points to take the cross product on which will give us the normal
+            //
             float p1_x = vertices[vert_idx2*3];
             float p1_y = vertices[vert_idx2*3+1];
             float p1_z = vertices[vert_idx2*3+2];
@@ -562,7 +571,7 @@ void drawRevolution(double scale)
 
 
             //
-            // Handle corner cases
+            // Handle cases at the origin
             //
             if(vert_idx2 % num_pts == 0)
             {
@@ -578,6 +587,9 @@ void drawRevolution(double scale)
             }
             else
             {
+                //
+                // Handle typical non-edge case
+                //
                 if((vert_idx2*3 + num_pts*3) < v_idx)
                 {
                     p3_x = vertices[(vert_idx2)*3+num_pts*3];
@@ -603,6 +615,10 @@ void drawRevolution(double scale)
                 }
                 else
                 {
+                    //
+                    // Handle vertices that have wrapped around the y-axis
+                    // P3 is actually equal to the first set of vertices
+                    //
                     p3_x = vertices[(vert_idx2 % num_pts)*3+num_pts*3];
                     p3_y = vertices[(vert_idx2 % num_pts)*3+num_pts*3+1];
                     p3_z = vertices[(vert_idx2 % num_pts)*3+num_pts*3+2];
@@ -623,11 +639,6 @@ void drawRevolution(double scale)
                     normals[n_idx++] = tempNormal[0];
                     normals[n_idx++] = tempNormal[1];
                     normals[n_idx++] = tempNormal[2];
-
-                    //normals[n_idx++] = normals[wrap_idx++];//0;
-                    //normals[n_idx++] = normals[wrap_idx++];//0;
-                    //normals[n_idx++] = normals[wrap_idx++];//0;
-
                 }
             }
 
@@ -636,24 +647,6 @@ void drawRevolution(double scale)
         normals[n_idx++] = 0;
         normals[n_idx++] = -1;
         normals[n_idx++] = 0;
-
-        /*for(int normal_idx = 0; normal_idx*3 < n_idx; normal_idx++)
-        {
-            printf("normal[%d] (x,y,z): %f,%f,%f\n", normal_idx, normals[normal_idx*3], normals[normal_idx*3+1], normals[normal_idx*3+2]);
-        }*/
-
-        // Debug test: draw normals as little lines
-        //glBegin(GL_LINES);
-        //for (int vert_idx3 = 0; vert_idx3*3 < v_idx; vert_idx3++)
-        //{
-        //    float length = 0.5;
-        //    // Draw line from vertex...
-        //    glVertex3f(vertices[vert_idx3*3], vertices[vert_idx3*3+1], vertices[vert_idx3*3+2]);
-        //    // In normal location * length
-        //    glVertex3f(vertices[vert_idx3*3] + normals[vert_idx3*3]*length, vertices[vert_idx3*3+1] + normals[vert_idx3*3+1]*length, vertices[vert_idx3*3+2] + normals[vert_idx3*3+2]*length);
-        //}
-        //glEnd();
-
 
 
         glEnableClientState(GL_VERTEX_ARRAY);
