@@ -26,6 +26,8 @@ protected:
     ///////////////////////////////// SHADERS /////////////////////////////////////
     ShaderProgram shader;
 
+    ShaderProgram part3Shader;
+
     //////////////////////////////// PROPERTIES ///////////////////////////////////
     // Switches for spheres
     BooleanProperty useTexture;
@@ -37,6 +39,8 @@ protected:
 
     BooleanProperty useShader;
 
+    BooleanProperty usePart3Shader;
+
     // Some slider properties
     RangeProperty rotateX, rotateY;
 
@@ -47,6 +51,7 @@ protected:
     // Scene lights
     PointLight pointLight;
     DirectionalLight directionalLight;
+    SpotLight spotLight;
 
     // My Model
     MyModel _myModel;
@@ -63,18 +68,22 @@ public:
         // They won't be loaded until the model is drawn for the first time.
         texture("checkers.png"),
         shader("shader.vert", "shader.frag", NULL),
+        part3Shader("shader_part3.vert", "shader_part3.frag", NULL),
 
         // Call the constructors for the lights
         pointLight("Point Light", GL_LIGHT1, /**direction part**/ -5, 5, 5, /**diffuse part**/ 1.0, 0.5, 0.5, 
-        /**specular part**/ 1.0, 0.5, 0.5, /**ambient part**/ .2f, 0.1, 0.1 /**attenuation part**/, 0.4, 0.7, 0),
+        /**specular part**/ 1.0, 0.5, 0.5, /**ambient part**/ .2f, 0.1, 0.1 /**attenuation part**/, 0.4, 0.7, 0),        
         directionalLight("Directional Light", GL_LIGHT0, /**direction part**/ 5, 5, 5, /**diffuse part**/ 0.0f, 0.5, 0.5f, 
-        /**specular part**/ 0.0f, 0.5f, 0.5f )
+        /**specular part**/ 0.0f, 0.5f, 0.5f ),
+        spotLight("Spot Light", GL_LIGHT2, /**direction part**/ 0, 5, 5, /**diffuse part**/ 1.0, 1.0, 1.0, 
+        /**specular part**/ 1.0, 1.0, 1.0, /**ambient part**/ .2f, 0.1, 0.1 /**attenuation part**/, 0.4, 0.7, 0),
 
         // Now, call the constructors for each Property:
-        , useTexture("Use Checkered Texture", false),
+        useTexture("Use Checkered Texture", false),
         showReferenceUnitSphere("Show Reference Unit Sphere", false),
         shapeChoice("Model Shape:", "Sphere|Cube|Cylinder|Torus|Icosahedron|Teapot|Revolution|My Model", 0),
         useShader("Use My Shader", false),
+        usePart3Shader("Use Part3 Shader", false),
         rotateX("Rotate X", -180, 180, 0, 1),
         rotateY("Rotate Y", -180, 180, 0, 1),
         diffuse("Diffuse Color", 1.0, 0.7, .4)
@@ -84,6 +93,7 @@ public:
         // in the top left corner of Modeler, under this model's entry:
         properties.add(pointLight.getProperties())
             .add(directionalLight.getProperties())
+            .add(spotLight.getProperties())
             .add(_myModel.getProperties());
 
         // Finally, add all the properties to this model's PropertyGroup.
@@ -91,6 +101,7 @@ public:
             .add(&showReferenceUnitSphere)
             .add(&shapeChoice)
             .add(&useShader)
+            .add(&usePart3Shader)
             .add(&rotateX)
             .add(&rotateY)
             .add(&diffuse)
@@ -108,6 +119,7 @@ public:
     void load() {
         texture.load();
         shader.load();
+        part3Shader.load();
         _myModel.load();
     }
 
@@ -223,6 +235,7 @@ public:
         // The lights must be drawn FIRST, so the other scene elements
         // can get lit!
         pointLight.draw();
+        spotLight.draw();
         directionalLight.draw();
 
         setDiffuseColor(
@@ -240,8 +253,12 @@ public:
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
-        // Use the shader if desired.
+        if (usePart3Shader.getValue()) {
+            part3Shader.use();
+        }
+
         if (useShader.getValue()) {
+            // Use the shader if desired.
             shader.use();
         }
 

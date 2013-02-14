@@ -170,4 +170,12 @@
       <Filter>Source Files\Scene</Filter>
     </CustomBuildStep>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shader_part3.frag">
+      <Filter>Source Files\Scene</Filter>
+    </None>
+    <None Include="shader_part3.vert">
+      <Filter>Source Files\Scene</Filter>
+    </None>
+  </ItemGroup>
 </Project>
